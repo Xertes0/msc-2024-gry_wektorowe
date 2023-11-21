@@ -22,7 +22,8 @@ sokol = declare_dependency(
     m_dep,
     sokol_ps_deps,
   ],
-  include_directories : include_directories('./3d_party/sokol')
+  include_directories : include_directories('./3d_party/sokol'),
+  compile_args : ['-DSOKOL_GLCORE33', '-DSOKOL_NO_DEPRECATED'],
 )
 
 # TODO: Account for macos
@@ -43,9 +44,12 @@ shdc_gen = generator(shdc,
                                   '--slang', 'glsl330'])
 
 
-shaders = shdc_gen.process('shaders/triangle.glsl')
+shaders = shdc_gen.process('shaders/lines.glsl')
 
 executable('main',
-           'src/main.c',
+           'src/sokol.c',
+           'src/asteroids/asteroids.c',
+           'src/asteroids/ship.c',
            shaders,
+           include_directories : include_directories('src'),
            dependencies : [sokol])
