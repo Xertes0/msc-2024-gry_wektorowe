@@ -46,10 +46,10 @@ shdc_gen = generator(shdc,
 
 shaders = shdc_gen.process('shaders/lines.glsl')
 
-executable('main',
+executable('asteroids',
            'src/sokol.c',
-           'src/asteroids/asteroids.c',
-           'src/asteroids/ship.c',
+           'src/ast/asteroids.c',
+           'src/ast/ship.c',
            shaders,
            include_directories : include_directories('src'),
            dependencies : [sokol])

@@ -66,7 +66,7 @@ sapp_desc sokol_main(int argc, char* argv[])
 		.frame_cb = sokol_frame,
 		.cleanup_cb = sokol_cleanup,
 		/* .event_cb = sokol_event, */
-		.window_title = "MSC 2024 Gry wektorowe (ezn_undefined)",
+		.window_title = "MSC 2024 Gry wektorowe - Asteroids (ezn_undefined)",
 		.logger.func = slog_func,
 	};
 }
