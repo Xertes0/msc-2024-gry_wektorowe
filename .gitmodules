@@ -4,3 +4,6 @@
 [submodule "3d_party/sokol-tools-bin"]
 	path = 3d_party/sokol-tools-bin
 	url = https://github.com/floooh/sokol-tools-bin.git
+[submodule "3d_party/HandmadeMath"]
+	path = 3d_party/HandmadeMath
+	url = https://github.com/HandmadeMath/HandmadeMath.git

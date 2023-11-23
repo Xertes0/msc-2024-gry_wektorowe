@@ -1,16 +1,22 @@
 #include <stdio.h>
+#include <math.h>
 
 #include <sokol_app.h>
 #include <sokol_gfx.h>
 #include <sokol_glue.h>
 #include <sokol_log.h>
 
-#include "ship.h"
+#include "actor.h"
+#include "object.h"
+#include "pipelines.h"
+
 #include "lines.glsl.h"
+
+#include <HandmadeMath.h>
 
 static struct {
 	sg_pass_action pass_action;
-	struct ship ship;
+	HMM_Mat4 projection;
 } state;
 
 static void sokol_init(void)
@@ -27,26 +33,46 @@ static void sokol_init(void)
 		}
 	};
 
-	state.ship = make_ship();
+	state.projection = HMM_Orthographic_RH_NO(-1.f, 1.f,
+	                                          -1.f, 1.f,
+	                                          -1.f, 1.f);
+
+	load_pipelines();
+	load_bindings();
+	register_new_ship();
 }
 
 static void sokol_frame(void)
 {
-	const int width = sapp_widthf();
-	const int height = sapp_heightf();
+	actors_tick();
 
-	vs_params_t vs_params = {
-		.u_res = { width, height },
-	};
+        /* Keep aspect ratio 1:1 */
+        /* TODO: Make it 4:3 */
+	const int width = sapp_width();
+	const int height = sapp_height();
+	const int size = width<height?width:height;
+	sg_begin_default_pass(&state.pass_action, size, size);
 
-	sg_begin_default_pass(&state.pass_action, (int) width, (int) height);
-	sg_apply_pipeline(state.ship.pip);
-	sg_apply_bindings(&state.ship.bind);
-	sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_params, &SG_RANGE(vs_params));
-	static unsigned flip_i = 0; flip_i++;
-	sg_draw(0, (flip_i>>2)%2==0?10:6, 1);
+	for (size_t i=0; i<g_object_count; ++i) {
+		const object_t *obj = &g_objects[i];
+
+		sg_apply_pipeline(g_pipelines[obj->pip_type]);
+		sg_apply_bindings(&g_bindings[obj->bind_type]);
+
+		HMM_Mat4 mvp = HMM_MulM4(obj->model_mat, state.projection);
+		vs_params_t vs_params;
+		memcpy(vs_params.mvp, mvp.Elements, sizeof(float) * 16);
+		sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_params, &SG_RANGE(vs_params));
+		sg_draw(0, (int) g_index_count[obj->bind_type], 1);
+	}
+
 	sg_end_pass();
 	sg_commit();
+}
+
+static void sokol_event(const sapp_event *event)
+{
+	actors_event(event);
 }
 
 static void sokol_cleanup(void)
@@ -60,12 +86,12 @@ sapp_desc sokol_main(int argc, char* argv[])
 	(void) argv;
 
 	return (sapp_desc) {
-		.width = 800,
-		.height = 600,
+		.width = 1000,
+		.height = 1000,
 		.init_cb = sokol_init,
 		.frame_cb = sokol_frame,
+		.event_cb = sokol_event,
 		.cleanup_cb = sokol_cleanup,
-		/* .event_cb = sokol_event, */
 		.window_title = "MSC 2024 Gry wektorowe - Asteroids (ezn_undefined)",
 		.logger.func = slog_func,
 	};

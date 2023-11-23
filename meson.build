@@ -1,7 +1,19 @@
-project('vector_games', 'c')
+project('vector_games', 'c',
+        default_options : ['warning_level=3'])
+
+add_global_arguments('-Wconversion',
+                     '-Wshadow',
+                     language : 'c')
 
 cc = meson.get_compiler('c')
 m_dep = cc.find_library('m', required : false)
+
+hmm_dep = declare_dependency(
+  dependencies : [m_dep],
+  include_directories : include_directories('./3d_party/HandmadeMath',
+                                            is_system : true),
+  # compile_args : ['-DHANDMADE_MATH_NO_SSE'],
+)
 
 # Platform specific sokol dependencies
 # TODO: Account for macos
@@ -16,13 +28,14 @@ if target_machine.system() == 'linux'
   ]
 endif
 
-sokol = declare_dependency(
+sokol_dep = declare_dependency(
   dependencies : [
     dependency('threads'),
     m_dep,
     sokol_ps_deps,
   ],
-  include_directories : include_directories('./3d_party/sokol'),
+  include_directories : include_directories('./3d_party/sokol',
+                                            is_system : true),
   compile_args : ['-DSOKOL_GLCORE33', '-DSOKOL_NO_DEPRECATED'],
 )
 
@@ -48,8 +61,11 @@ shaders = shdc_gen.process('shaders/lines.glsl')
 
 executable('asteroids',
            'src/sokol.c',
+           'src/ast/actor.c',
            'src/ast/asteroids.c',
+           'src/ast/object.c',
+           'src/ast/pipelines.c',
            'src/ast/ship.c',
            shaders,
            include_directories : include_directories('src'),
-           dependencies : [sokol])
+           dependencies : [sokol_dep, hmm_dep])

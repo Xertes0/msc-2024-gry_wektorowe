@@ -1,10 +1,14 @@
 #pragma once
 
-#include <sokol_gfx.h>
+#include <HandmadeMath.h>
 
-struct ship {
-	sg_bindings bind;
-	sg_pipeline pip;
-};
+/* TODO: Consider removing this header
+         and jam everything into object.h */
+typedef struct {
+	HMM_Vec3 pos;
+	HMM_Vec3 vel;
+	float rot;
+} ship_t;
 
-struct ship make_ship(void);
+/* TODO: this name is lame */
+void register_new_ship(void);
