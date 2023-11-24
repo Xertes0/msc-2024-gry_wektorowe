@@ -53,10 +53,16 @@ static void sokol_frame(void)
 	const int size = width<height?width:height;
 	sg_begin_default_pass(&state.pass_action, size, size);
 
+	pip_type_t last_pip = PIPTYPE_COUNT;
 	for (size_t i=0; i<g_object_count; ++i) {
 		const object_t *obj = &g_objects[i];
 
-		sg_apply_pipeline(g_pipelines[obj->pip_type]);
+                /* TODO: Make sure that we don't need to call
+                 * sg_apply_pipeline before every call. */
+		if (last_pip != obj->pip_type) {
+			sg_apply_pipeline(g_pipelines[obj->pip_type]);
+			last_pip = obj->pip_type;
+		}
 		sg_apply_bindings(&g_bindings[obj->bind_type]);
 
 		HMM_Mat4 mvp = HMM_MulM4(obj->model_mat, state.projection);
