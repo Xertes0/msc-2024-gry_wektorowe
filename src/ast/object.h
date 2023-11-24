@@ -30,7 +30,8 @@ extern size_t g_object_count;
 
 object_t *add_object(object_t obj);
 
-HMM_Mat4 object_mat(object_t *obj);
+HMM_Mat4 object_mat(const object_t *obj);
 
+/* TODO: Lame names */
 void register_new_ship(void);
 void register_new_asteroid(void);

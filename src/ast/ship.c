@@ -4,6 +4,35 @@
 
 #include "actor.h"
 
+/* TODO: Move this into object flag? */
+static void bullet_tick(actor_t *act)
+{
+	act->obj->move.pos = HMM_AddV3(act->obj->move.pos, act->obj->move.vel);
+}
+
+#define BULLET_SCALE 0.005f
+/* TODO: Shoot from tip not the center of the ship. */
+static void register_new_bullet(HMM_Vec3 pos, float rot)
+{
+	HMM_Vec2 rotv = HMM_RotateV2(HMM_V2(0.f, 0.01f), rot);
+	HMM_Vec3 vel = HMM_V3(rotv.X, rotv.Y, 0.f);
+	object_t *obj = add_object((object_t) {
+			.flags = OF_MOVING,
+			.pip_type = PIPTYPE_LINES,
+			.bind_type = BINDTYPE_BULLET,
+			.model_mat = HMM_Scale(HMM_V3(BULLET_SCALE, BULLET_SCALE, 1.f)),
+			.move = {
+				.pos = pos,
+				.vel = vel,
+				.rot = rot,
+			},
+		});
+	add_actor((actor_t) {
+			.tick = bullet_tick,
+			.obj = obj,
+		});
+}
+
 static void ship_event(actor_t *act, const sapp_event *event)
 {
 	switch (event->type) {
@@ -17,6 +46,9 @@ static void ship_event(actor_t *act, const sapp_event *event)
 		}; break;
 		case SAPP_KEYCODE_RIGHT: {
 			act->ship_mov.pright = true;
+		}; break;
+		case SAPP_KEYCODE_SPACE: {
+			register_new_bullet(act->obj->move.pos, act->obj->move.rot);
 		}; break;
 		default: break;
 		}
@@ -50,7 +82,7 @@ static void ship_tick(actor_t *act)
 		obj->move.rot += angle * 0.05f;
 	}
 	if (act->ship_mov.pup) {
-		HMM_Vec2 vec = HMM_RotateV2(HMM_V2(0.f, 0.005f), obj->move.rot);
+		HMM_Vec2 vec = HMM_RotateV2(HMM_V2(0.f, 0.0005f), obj->move.rot);
 		obj->move.vel = HMM_AddV3(obj->move.vel, HMM_V3(vec.X, vec.Y, 0.f));
 	}
 	obj->move.pos = HMM_AddV3(obj->move.pos, obj->move.vel);

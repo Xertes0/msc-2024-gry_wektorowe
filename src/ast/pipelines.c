@@ -98,4 +98,6 @@ void load_bindings(void)
 				.label = "asteroida-indices",
 			}),
 	};
+	g_index_count[BINDTYPE_BULLET] = sizeof(asteroida_indices) / sizeof(uint16_t);
+	g_bindings[BINDTYPE_BULLET] = g_bindings[BINDTYPE_ASTEROIDA];
 }
