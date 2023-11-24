@@ -40,6 +40,7 @@ static void sokol_init(void)
 	load_pipelines();
 	load_bindings();
 	register_new_ship();
+	register_new_asteroid();
 }
 
 static void sokol_frame(void)
@@ -65,7 +66,7 @@ static void sokol_frame(void)
 		}
 		sg_apply_bindings(&g_bindings[obj->bind_type]);
 
-		HMM_Mat4 mvp = HMM_MulM4(obj->model_mat, state.projection);
+		HMM_Mat4 mvp = HMM_MulM4(object_mat(obj), state.projection);
 		vs_params_t vs_params;
 		memcpy(vs_params.mvp, mvp.Elements, sizeof(float) * 16);
 		sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_params, &SG_RANGE(vs_params));

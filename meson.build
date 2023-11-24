@@ -62,6 +62,7 @@ shaders = shdc_gen.process('shaders/lines.glsl')
 executable('asteroids',
            'src/sokol.c',
            'src/ast/actor.c',
+           'src/ast/asteroid.c',
            'src/ast/asteroids.c',
            'src/ast/object.c',
            'src/ast/pipelines.c',

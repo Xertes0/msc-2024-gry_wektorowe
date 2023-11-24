@@ -56,8 +56,8 @@ void load_bindings(void)
 	};
 
 	size_t ship_index_count = sizeof(ship_indices) / sizeof(uint16_t);
-	g_index_count[BINDTYPE_SHIPA] = ship_index_count;
-	g_index_count[BINDTYPE_SHIPB] = ship_index_count - 4;
+	g_index_count[BINDTYPE_SHIPA] = ship_index_count - 4;
+	g_index_count[BINDTYPE_SHIPB] = ship_index_count;
 	g_bindings[BINDTYPE_SHIPA] = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
 				.type = SG_BUFFERTYPE_VERTEXBUFFER,
@@ -71,4 +71,31 @@ void load_bindings(void)
 			}),
 	};
 	g_bindings[BINDTYPE_SHIPB] = g_bindings[BINDTYPE_SHIPA];
+
+	float asteroida_vertices[] = {
+		-1.0f, 1.0f, 0.f,
+		-1.0f, -1.0f, 0.f,
+		1.0f, 1.0f, 0.f,
+		1.0f, -1.0f, 0.f,
+	};
+	uint16_t asteroida_indices[] = {
+		0, 1,
+		0, 2,
+		3, 1,
+		3, 2,
+	};
+
+	g_index_count[BINDTYPE_ASTEROIDA] = sizeof(asteroida_indices) / sizeof(uint16_t);
+	g_bindings[BINDTYPE_ASTEROIDA] = (sg_bindings) {
+		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
+				.type = SG_BUFFERTYPE_VERTEXBUFFER,
+				.data = SG_RANGE(asteroida_vertices),
+				.label = "asteroida-vertices",
+			}),
+		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
+				.type = SG_BUFFERTYPE_INDEXBUFFER,
+				.data = SG_RANGE(asteroida_indices),
+				.label = "asteroida-indices",
+			}),
+	};
 }

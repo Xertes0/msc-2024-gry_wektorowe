@@ -16,6 +16,7 @@ struct actor {
 			bool pup : 1;
 			bool pleft : 1;
 			bool pright : 1;
+			uint8_t flip;
 		} ship_mov;
 	};
 };

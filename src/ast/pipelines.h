@@ -4,14 +4,18 @@
 
 /* LINES will probably be the only pipeline
    needed for objects (or at all) */
+/* TODO: Handle 0 types. */
 typedef enum {
-	PIPTYPE_LINES = 0,
+	_PIPTYPE_DEFAULT = 0,
+	PIPTYPE_LINES,
 	PIPTYPE_COUNT,
 } pip_type_t;
 
 typedef enum {
-	BINDTYPE_SHIPA = 0,
-	BINDTYPE_SHIPB = 1,
+	_BINDTYPE_DEFAULT = 0,
+	BINDTYPE_SHIPA,
+	BINDTYPE_SHIPB,
+	BINDTYPE_ASTEROIDA,
 	BINDTYPE_COUNT,
 } bind_type_t;
 
