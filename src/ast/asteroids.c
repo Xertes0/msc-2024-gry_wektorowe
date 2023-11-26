@@ -132,8 +132,6 @@ static void sokol_frame(void)
 	for (size_t i=0; i<g_object_count; ++i) {
 		const object_t *obj = &g_objects[i];
 
-                /* TODO: Make sure that we don't need to call
-                 * sg_apply_pipeline before every call. */
 		if (last_pip != obj->pip_type) {
 			sg_apply_pipeline(g_pipelines[obj->pip_type]);
 			last_pip = obj->pip_type;
@@ -148,8 +146,6 @@ static void sokol_frame(void)
 	}
 	sg_end_pass();
 
-        /* Keep aspect ratio 1:1 */
-        /* TODO: Make it 4:3 */
 	const float win_width = sapp_widthf();
 	const float win_height = sapp_heightf();
 	sg_begin_default_pass(&state.pass_action, (int) win_width, (int) win_height);
@@ -164,8 +160,6 @@ static void sokol_frame(void)
 
 	fs_offscr_params_t fs_offscr_params = {
 		.u_resolution = {
-			/* [0] = (float) size, */
-			/* [1] = (float) size, */
 			[0] = width,
 			[1] = height,
 		},
