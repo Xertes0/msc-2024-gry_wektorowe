@@ -4,16 +4,19 @@
 
 #include "actor.h"
 
+#define SHIP_SCALE (0.075f)
+#define BULLET_SCALE (0.005f)
+
 /* TODO: Move this into object flag? */
 static void bullet_tick(actor_t *act)
 {
 	act->obj->move.pos = HMM_AddV3(act->obj->move.pos, act->obj->move.vel);
 }
 
-#define BULLET_SCALE 0.005f
-/* TODO: Shoot from tip not the center of the ship. */
 static void register_new_bullet(HMM_Vec3 pos, HMM_Vec3 ship_vel, float rot)
 {
+	HMM_Vec2 offset = HMM_RotateV2(HMM_V2(0.f, SHIP_SCALE), rot);
+	pos = HMM_AddV3(pos, HMM_V3(offset.X, offset.Y, 0.f));
 	HMM_Vec2 rotv = HMM_RotateV2(HMM_V2(0.f, 0.01f), rot);
 	HMM_Vec3 vel = HMM_AddV3(HMM_V3(rotv.X, rotv.Y, 0.f), ship_vel);
 	object_t *obj = add_object((object_t) {
@@ -101,7 +104,6 @@ static void ship_tick(actor_t *act)
 	}
 }
 
-#define SHIP_SCALE 0.075f
 void register_new_ship(void)
 {
 	static bool called = false;
