@@ -57,7 +57,9 @@ shdc_gen = generator(shdc,
                                   '--slang', 'glsl330'])
 
 
-shaders = shdc_gen.process('shaders/lines.glsl')
+shaders = shdc_gen.process('shaders/lines.glsl',
+                           'shaders/offscreen.glsl',
+                           'shaders/offscreen_v2.glsl')
 
 executable('asteroids',
            'src/sokol.c',

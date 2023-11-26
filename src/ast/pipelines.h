@@ -2,6 +2,10 @@
 
 #include <sokol_gfx.h>
 
+#define PIP_CULLMODE (SG_CULLMODE_NONE)
+#define PIP_SAMPLE_COUNT (1)
+#define PIP_PIXEL_FORMAT (SG_PIXELFORMAT_RGBA8)
+
 /* LINES will probably be the only pipeline
    needed for objects (or at all) */
 /* TODO: Handle 0 types. */

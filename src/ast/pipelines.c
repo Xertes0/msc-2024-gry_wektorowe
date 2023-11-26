@@ -14,15 +14,19 @@ void load_pipelines(void)
 	assert(!called); called = true;
 
 	g_pipelines[PIPTYPE_LINES] = sg_make_pipeline(&(sg_pipeline_desc) {
-			.shader = sg_make_shader(lines_shader_desc(sg_query_backend())),
 			.layout = {
 				.attrs = {
 					[ATTR_vs_position].format = SG_VERTEXFORMAT_FLOAT3,
 				},
 			},
-			.label = "lines-pipeline",
-			.primitive_type = SG_PRIMITIVETYPE_LINES,
+			.shader = sg_make_shader(lines_shader_desc(sg_query_backend())),
 			.index_type = SG_INDEXTYPE_UINT16,
+			.cull_mode = PIP_CULLMODE,
+			.sample_count = PIP_SAMPLE_COUNT,
+			.depth.pixel_format = SG_PIXELFORMAT_NONE,
+			.colors[0].pixel_format = PIP_PIXEL_FORMAT,
+			.primitive_type = SG_PRIMITIVETYPE_LINES,
+			.label = "lines-pipeline",
 		});
 }
 
