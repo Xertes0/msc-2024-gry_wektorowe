@@ -77,16 +77,23 @@ void load_bindings(void)
 	g_bindings[BINDTYPE_SHIPB] = g_bindings[BINDTYPE_SHIPA];
 
 	float asteroida_vertices[] = {
-		-1.0f, 1.0f, 0.f,
-		-1.0f, -1.0f, 0.f,
-		1.0f, 1.0f, 0.f,
-		1.0f, -1.0f, 0.f,
+		-0.5f, 1.f, 0.f,
+		-0.25f, 0.5f, 0.f,
+		-1.f, 0.5f, 0.f,
+		-1.f, -0.25f, 0.f,
+		-0.5f, -1.f, 0.f,
+		0.25f, -0.75f, 0.f,
+		0.5f, -1.f, 0.f,
+		1.f, -0.5f, 0.f,
+		0.25f, 0.01f, 0.f,
+		1.f, 0.25f, 0.f,
+		1.f, 0.5f, 0.f,
+		0.25f, 1.f, 0.f,
 	};
 	uint16_t asteroida_indices[] = {
-		0, 1,
-		0, 2,
-		3, 1,
-		3, 2,
+		0, 1, 1, 2, 2, 3, 3, 4, 4, 5,
+		5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
+		10, 11, 11, 0,
 	};
 
 	g_index_count[BINDTYPE_ASTEROIDA] = sizeof(asteroida_indices) / sizeof(uint16_t);
@@ -102,6 +109,95 @@ void load_bindings(void)
 				.label = "asteroida-indices",
 			}),
 	};
-	g_index_count[BINDTYPE_BULLET] = sizeof(asteroida_indices) / sizeof(uint16_t);
-	g_bindings[BINDTYPE_BULLET] = g_bindings[BINDTYPE_ASTEROIDA];
+
+	float asteroidb_vertices[] = {
+		0.f, 0.5f, 0.f,
+		0.5f, 1.f, 0.f,
+		1.f, 0.5f, 0.f,
+		0.75f, 0.f, 0.f,
+		1.f, -0.5f, 0.f,
+		0.25f, -1.f, 0.f,
+		-0.5f, -1.f, 0.f,
+		-1.f, -0.5f, 0.f,
+		-1.f, 0.5f, 0.f,
+		-0.5f, 1.f, 0.f,
+	};
+	uint16_t asteroidb_indices[] = {
+		0, 1, 1, 2, 2, 3, 3, 4, 4, 5,
+		5, 6, 6, 7, 7, 8, 8, 9, 9, 0,
+	};
+
+	g_index_count[BINDTYPE_ASTEROIDB] = sizeof(asteroidb_indices) / sizeof(uint16_t);
+	g_bindings[BINDTYPE_ASTEROIDB] = (sg_bindings) {
+		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
+				.type = SG_BUFFERTYPE_VERTEXBUFFER,
+				.data = SG_RANGE(asteroidb_vertices),
+				.label = "asteroidb-vertices",
+			}),
+		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
+				.type = SG_BUFFERTYPE_INDEXBUFFER,
+				.data = SG_RANGE(asteroidb_indices),
+				.label = "asteroidb-indices",
+			}),
+	};
+
+	float asteroidc_vertices[] = {
+		0.f, 0.75f, 0.f,
+		0.5f, 1.f, 0.f,
+		1.f, 0.5f, 0.f,
+		0.5f, 0.25f, 0.f,
+		1.f, -0.25f, 0.f,
+		0.5f, -1.f, 0.f,
+		-0.25f, -0.75f, 0.f,
+		-0.5f, -1.f, 0.f,
+		-1.f, -0.5f, 0.f,
+		-0.75f, 0.f, 0.f,
+		-1.f, 0.5f, 0.f,
+		-0.5, 1.f, 0.f,
+	};
+	uint16_t asteroidc_indices[] = {
+		0, 1, 1, 2, 2, 3, 3, 4, 4, 5,
+		5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
+		10, 11, 11, 0,
+	};
+
+	g_index_count[BINDTYPE_ASTEROIDC] = sizeof(asteroidc_indices) / sizeof(uint16_t);
+	g_bindings[BINDTYPE_ASTEROIDC] = (sg_bindings) {
+		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
+				.type = SG_BUFFERTYPE_VERTEXBUFFER,
+				.data = SG_RANGE(asteroidc_vertices),
+				.label = "asteroidc-vertices",
+			}),
+		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
+				.type = SG_BUFFERTYPE_INDEXBUFFER,
+				.data = SG_RANGE(asteroidc_indices),
+				.label = "asteroidc-indices",
+			}),
+	};
+
+	float bullet_vertices[] = {
+		-1.0f, 1.0f, 0.f,
+		-1.0f, -1.0f, 0.f,
+		1.0f, 1.0f, 0.f,
+		1.0f, -1.0f, 0.f,
+	};
+	uint16_t bullet_indices[] = {
+		0, 1,
+		0, 2,
+		3, 1,
+		3, 2,
+	};
+	g_index_count[BINDTYPE_BULLET] = sizeof(bullet_indices) / sizeof(uint16_t);
+	g_bindings[BINDTYPE_BULLET] = (sg_bindings) {
+		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
+				.type = SG_BUFFERTYPE_VERTEXBUFFER,
+				.data = SG_RANGE(bullet_vertices),
+				.label = "bullet-vertices",
+			}),
+		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
+				.type = SG_BUFFERTYPE_INDEXBUFFER,
+				.data = SG_RANGE(bullet_indices),
+				.label = "bullet-indices",
+			}),
+	};
 }

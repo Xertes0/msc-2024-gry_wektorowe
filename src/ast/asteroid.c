@@ -9,22 +9,26 @@ static void ast_tick(actor_t *act)
         /* Movement */
 
         /* TODO: Some kind of delta time */
-	obj->move.rot += 0.05f;
+	obj->move.rot += 0.005f;
 	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
 }
 
-#define AST_SCALE 0.075f
+#define AST_SCALE 0.1f
 void register_new_asteroid(void)
 {
-	object_t *ast = add_object((object_t) {
-			.flags = OF_MOVING,
-			.model_mat = HMM_Scale(HMM_V3(AST_SCALE, AST_SCALE, 1.f)),
-			.pip_type = PIPTYPE_LINES,
-			.bind_type = BINDTYPE_ASTEROIDA,
-			.move.vel = HMM_V2(0.005f, 0.01f),
-		});
-	add_actor((actor_t) {
-			.tick = ast_tick,
-			.obj = ast,
-		});
+	for (size_t i=BINDTYPE_ASTEROIDA; i <= BINDTYPE_ASTEROIDC; ++i) {
+		float offset = (float) (i - BINDTYPE_ASTEROIDA);
+		object_t *ast = add_object((object_t) {
+				.flags = OF_MOVING,
+				.model_mat = HMM_Scale(HMM_V3(AST_SCALE, AST_SCALE, 1.f)),
+				.pip_type = PIPTYPE_LINES,
+				.bind_type = i,
+				.move.pos = HMM_V2(-0.5f + (0.5f * offset), 0.f),
+				.move.vel = HMM_V2(0.0001f, 0.00005f),
+			});
+		add_actor((actor_t) {
+				.tick = ast_tick,
+				.obj = ast,
+			});
+	}
 }
