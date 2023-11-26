@@ -8,6 +8,13 @@ add_global_arguments('-Wconversion',
 cc = meson.get_compiler('c')
 m_dep = cc.find_library('m', required : false)
 
+# Can't deploy to GitHub Pages with pthreads.
+# See https://emscripten.org/docs/porting/pthreads.html?highlight=sharedarraybuffer
+threads_dep = []
+if host_machine.system() != 'emscripten'
+  threads_dep = dependency('threads')
+endif
+
 hmm_dep = declare_dependency(
   dependencies : [m_dep],
   include_directories : include_directories('./3d_party/HandmadeMath',
@@ -35,7 +42,7 @@ endif
 
 sokol_dep = declare_dependency(
   dependencies : [
-    dependency('threads'),
+    threads_dep,
     m_dep,
     sokol_ps_deps,
   ],
