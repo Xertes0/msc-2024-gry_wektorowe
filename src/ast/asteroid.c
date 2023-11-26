@@ -10,7 +10,7 @@ static void ast_tick(actor_t *act)
 
         /* TODO: Some kind of delta time */
 	obj->move.rot += 0.05f;
-	obj->move.pos = HMM_AddV3(obj->move.pos, obj->move.vel);
+	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
 }
 
 #define AST_SCALE 0.075f
@@ -21,7 +21,7 @@ void register_new_asteroid(void)
 			.model_mat = HMM_Scale(HMM_V3(AST_SCALE, AST_SCALE, 1.f)),
 			.pip_type = PIPTYPE_LINES,
 			.bind_type = BINDTYPE_ASTEROIDA,
-			.move.vel = HMM_V3(0.005f, 0.01f, 0.f),
+			.move.vel = HMM_V2(0.005f, 0.01f),
 		});
 	add_actor((actor_t) {
 			.tick = ast_tick,

@@ -10,15 +10,15 @@
 /* TODO: Move this into object flag? */
 static void bullet_tick(actor_t *act)
 {
-	act->obj->move.pos = HMM_AddV3(act->obj->move.pos, act->obj->move.vel);
+	act->obj->move.pos = HMM_AddV2(act->obj->move.pos, act->obj->move.vel);
 }
 
-static void register_new_bullet(HMM_Vec3 pos, HMM_Vec3 ship_vel, float rot)
+static void register_new_bullet(HMM_Vec2 pos, HMM_Vec2 ship_vel, float rot)
 {
 	HMM_Vec2 offset = HMM_RotateV2(HMM_V2(0.f, SHIP_SCALE), rot);
-	pos = HMM_AddV3(pos, HMM_V3(offset.X, offset.Y, 0.f));
-	HMM_Vec2 rotv = HMM_RotateV2(HMM_V2(0.f, 0.01f), rot);
-	HMM_Vec3 vel = HMM_AddV3(HMM_V3(rotv.X, rotv.Y, 0.f), ship_vel);
+	pos = HMM_AddV2(pos, offset);
+	HMM_Vec2 vel = HMM_AddV2(HMM_RotateV2(HMM_V2(0.f, 0.01f), rot),
+	                         ship_vel);
 	object_t *obj = add_object((object_t) {
 			.flags = OF_MOVING,
 			.pip_type = PIPTYPE_LINES,
@@ -87,11 +87,12 @@ static void ship_tick(actor_t *act)
 		obj->move.rot += angle * 0.05f;
 	}
 	if (act->ship_mov.pup) {
-		HMM_Vec2 vec = HMM_RotateV2(HMM_V2(0.f, 0.0005f), obj->move.rot);
-		obj->move.vel = HMM_AddV3(obj->move.vel, HMM_V3(vec.X, vec.Y, 0.f));
+		obj->move.vel = HMM_AddV2(obj->move.vel,
+		                          HMM_RotateV2(HMM_V2(0.f, 0.0005f),
+		                                       obj->move.rot));
 	}
-	obj->move.pos = HMM_AddV3(obj->move.pos, obj->move.vel);
-	obj->move.vel = HMM_MulV3F(obj->move.vel, 0.99f);
+	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
+	obj->move.vel = HMM_MulV2F(obj->move.vel, 0.99f);
 
         /* Switch variant every few ticks */
 
