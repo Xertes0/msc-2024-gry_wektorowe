@@ -12,6 +12,7 @@ static void bullet_tick(actor_t *act)
 
 #define BULLET_SCALE 0.005f
 /* TODO: Shoot from tip not the center of the ship. */
+/* TODO: Add ship velocity to the bullet. */
 static void register_new_bullet(HMM_Vec3 pos, float rot)
 {
 	HMM_Vec2 rotv = HMM_RotateV2(HMM_V2(0.f, 0.01f), rot);

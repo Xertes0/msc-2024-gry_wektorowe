@@ -23,5 +23,5 @@ struct actor {
 typedef struct actor actor_t;
 
 void add_actor(actor_t act);
-void actors_tick();
+void actors_tick(void);
 void actors_event(const sapp_event *);

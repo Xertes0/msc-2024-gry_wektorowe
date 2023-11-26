@@ -10,7 +10,7 @@ void add_actor(actor_t act)
 	actors[actor_count++] = act;
 }
 
-void actors_tick()
+void actors_tick(void)
 {
 	for (size_t i=0; i<actor_count; ++i) {
 		if (actors[i].tick) {

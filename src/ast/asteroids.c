@@ -192,7 +192,7 @@ sapp_desc sokol_main(int argc, char* argv[])
 	(void) argv;
 
 	return (sapp_desc) {
-		.width = 720 * TARGET_RATIO,
+		.width = (int) (720.f * TARGET_RATIO),
 		.height = 720,
 		.init_cb = sokol_init,
 		.frame_cb = sokol_frame,
