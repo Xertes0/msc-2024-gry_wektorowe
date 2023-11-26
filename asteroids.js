@@ -3573,8 +3573,8 @@ var stackSave = createExportWrapper('stackSave');
 var stackRestore = createExportWrapper('stackRestore');
 var stackAlloc = createExportWrapper('stackAlloc');
 var _emscripten_stack_get_current = () => (_emscripten_stack_get_current = wasmExports['emscripten_stack_get_current'])();
-var ___start_em_js = Module['___start_em_js'] = 101592;
-var ___stop_em_js = Module['___stop_em_js'] = 107816;
+var ___start_em_js = Module['___start_em_js'] = 102216;
+var ___stop_em_js = Module['___stop_em_js'] = 108440;
 
 // include: postamble.js
 // === Auto-generated postamble setup entry stuff ===
