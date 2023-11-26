@@ -28,6 +28,11 @@ if target_machine.system() == 'linux'
   ]
 endif
 
+sokol_backend = 'GLCORE33'
+if host_machine.system() == 'emscripten'
+  sokol_backend = 'GLES3'
+endif
+
 sokol_dep = declare_dependency(
   dependencies : [
     dependency('threads'),
@@ -36,7 +41,8 @@ sokol_dep = declare_dependency(
   ],
   include_directories : include_directories('./3d_party/sokol',
                                             is_system : true),
-  compile_args : ['-DSOKOL_GLCORE33', '-DSOKOL_NO_DEPRECATED'],
+  compile_args : ['-DSOKOL_' + sokol_backend,
+                  '-DSOKOL_NO_DEPRECATED'],
 )
 
 # TODO: Account for macos
@@ -48,18 +54,35 @@ else
   error('Your operating system is not supported')
 endif
 
+shader_lang = 'glsl330'
+if host_machine.system() == 'emscripten'
+  shader_lang = 'glsl300es'
+endif
+
 # NOTE: Executable may not have executable permission by default
 shdc = find_program('./3d_party/sokol-tools-bin/bin' + shdc_pathsuf)
 shdc_gen = generator(shdc,
                      output : '@PLAINNAME@.h',
                      arguments : ['--input', '@INPUT@',
                                   '--output', '@OUTPUT@',
-                                  '--slang', 'glsl330'])
-
+                                  '--slang', shader_lang])
 
 shaders = shdc_gen.process('shaders/lines.glsl',
                            'shaders/offscreen.glsl',
                            'shaders/offscreen_v2.glsl')
+
+exe_name_suffix = []
+exe_ps_deps = []
+if host_machine.system() == 'emscripten'
+  exe_name_suffix = 'html'
+
+  shell_path = meson.source_root() + '/html/shell.html'
+  emscripten = declare_dependency(extra_files : [shell_path],
+                                  link_args : ['-sMAX_WEBGL_VERSION=2',
+                                               '-sMIN_WEBGL_VERSION=2',
+                                               '--shell-file', shell_path])
+  exe_ps_deps = [emscripten]
+endif
 
 executable('asteroids',
            'src/sokol.c',
@@ -71,4 +94,5 @@ executable('asteroids',
            'src/ast/ship.c',
            shaders,
            include_directories : include_directories('src'),
-           dependencies : [sokol_dep, hmm_dep])
+           dependencies : [sokol_dep, hmm_dep] + exe_ps_deps,
+           name_suffix : exe_name_suffix)
