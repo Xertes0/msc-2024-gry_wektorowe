@@ -19,6 +19,7 @@ typedef struct {
 	HMM_Mat4 model_mat;
 
 	struct {
+                /* TODO: Make those Vec2. */
 		HMM_Vec3 pos;
 		HMM_Vec3 vel;
 		float rot;
