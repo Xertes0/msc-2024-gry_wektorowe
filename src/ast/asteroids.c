@@ -12,15 +12,16 @@
 
 #include "lines.glsl.h"
 
-#if 0
-#include "offscreen_v2.glsl.h"
-#else
-#include "offscreen.glsl.h"
-#endif
+#include "offscreen1.glsl.h"
+#include "offscreen2.glsl.h"
+#include "offscreen3.glsl.h"
+#define OFFSCREEN_SHADER_COUNT 3
 
 #include <HandmadeMath.h>
 
 #define TARGET_RATIO (4.f / 3.f)
+#define OFFSCREEN_HEIGHT (256.f)
+#define OFFSCREEN_WIDTH (OFFSCREEN_HEIGHT * TARGET_RATIO)
 
 static struct {
 	sg_pass_action pass_action;
@@ -28,18 +29,19 @@ static struct {
 	struct {
 		sg_pass pass;
 		sg_bindings bind;
-		sg_pipeline pip;
+		sg_pipeline pip[OFFSCREEN_SHADER_COUNT];
+		size_t selected;
 	} offscr;
-        /* TODO: Current time tracing is very sketchy. */
+	/* TODO: Current time tracing is very sketchy. */
 	float time;
 } state;
 
 static void sokol_init(void)
 {
 	sg_setup(&(sg_desc) {
-		.context = sapp_sgcontext(),
-		.logger.func = slog_func,
-	});
+			.context = sapp_sgcontext(),
+			.logger.func = slog_func,
+		});
 
 	state.pass_action = (sg_pass_action) {
 		.colors[0] = {
@@ -58,8 +60,8 @@ static void sokol_init(void)
 
 	const sg_image offscr_img = sg_make_image(&(sg_image_desc) {
 			.render_target = true,
-			.width = (int) (256.f * TARGET_RATIO),
-			.height = 256,
+			.width = (int) OFFSCREEN_WIDTH,
+			.height = (int) OFFSCREEN_HEIGHT,
 			.pixel_format = PIP_PIXEL_FORMAT,
 			.sample_count = PIP_SAMPLE_COUNT,
 			.label = "offscreen-image",
@@ -104,17 +106,25 @@ static void sokol_init(void)
 		},
 	};
 
-	state.offscr.pip = sg_make_pipeline(&(sg_pipeline_desc) {
-			.layout = {
-				.attrs = {
-					[ATTR_vs_offscr_position].format = SG_VERTEXFORMAT_FLOAT3,
-					[ATTR_vs_offscr_tex_coord].format = SG_VERTEXFORMAT_FLOAT2,
+	const sg_shader offscr_shaders[OFFSCREEN_SHADER_COUNT] = {
+		sg_make_shader(offscreen1_shader_desc(sg_query_backend())),
+		sg_make_shader(offscreen2_shader_desc(sg_query_backend())),
+		sg_make_shader(offscreen3_shader_desc(sg_query_backend())),
+	};
+	for (size_t i=0; i<OFFSCREEN_SHADER_COUNT; ++i) {
+		state.offscr.pip[i] = sg_make_pipeline(&(sg_pipeline_desc) {
+				.layout = {
+                                        /* Attrs always the same. */
+					.attrs = {
+						[ATTR_vs_offscr1_position].format = SG_VERTEXFORMAT_FLOAT3,
+						[ATTR_vs_offscr1_tex_coord].format = SG_VERTEXFORMAT_FLOAT2,
+					},
 				},
-			},
-			.shader = sg_make_shader(offscreen_shader_desc(sg_query_backend())),
-			.index_type = SG_INDEXTYPE_UINT16,
-			.label = "offscreen-to-display-pipeline",
-		});
+				.shader = offscr_shaders[i],
+				.index_type = SG_INDEXTYPE_UINT16,
+				.label = "offscreen-to-display-nth-pipeline",
+			});
+	}
 
 	load_pipelines();
 	load_bindings();
@@ -155,17 +165,38 @@ static void sokol_frame(void)
 
 	sg_apply_viewportf((win_width - width) / 2.f, 0, width, height, false);
 
-	sg_apply_pipeline(state.offscr.pip);
+	sg_apply_pipeline(state.offscr.pip[state.offscr.selected]);
 	sg_apply_bindings(&state.offscr.bind);
 
-	fs_offscr_params_t fs_offscr_params = {
-		.u_resolution = {
-			[0] = width,
-			[1] = height,
-		},
-		.u_time = state.time,
-	};
-	sg_apply_uniforms(SG_SHADERSTAGE_FS, SLOT_fs_offscr_params, &SG_RANGE(fs_offscr_params));
+	switch (state.offscr.selected) {
+	case 0: // Shader 1 and 2 take the same parameters.
+	case 1: {
+		fs_offscr1_params_t fs_offscr_params = {
+			.u_resolution = {
+				[0] = width,
+				[1] = height,
+			},
+			.u_time = state.time,
+		};
+		sg_apply_uniforms(SG_SHADERSTAGE_FS, SLOT_fs_offscr1_params, &SG_RANGE(fs_offscr_params));
+	} break;
+	case 2: {
+		vs_offscr3_params_t vs_offscr_params = {
+			.SourceSize = {
+				[0] = OFFSCREEN_WIDTH,
+				[1] = OFFSCREEN_HEIGHT,
+			},
+			.OutputSize = {
+				[0] = width,
+				[1] = height,
+			},
+		};
+		sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_offscr3_params, &SG_RANGE(vs_offscr_params));
+	} break;
+	default:
+		fprintf(stderr, "ERROR: Bad shader selected\n");
+		sapp_request_quit();
+	}
 
 	sg_draw(0, 6, 1);
 
@@ -178,6 +209,22 @@ static void sokol_frame(void)
 
 static void sokol_event(const sapp_event *event)
 {
+	if (event->type == SAPP_EVENTTYPE_KEY_DOWN &&
+	    event->modifiers & SAPP_MODIFIER_CTRL) {
+		switch (event->key_code) {
+		case SAPP_KEYCODE_1: {
+			state.offscr.selected = 0;
+		} break;
+		case SAPP_KEYCODE_2: {
+			state.offscr.selected = 1;
+		} break;
+		case SAPP_KEYCODE_3: {
+			state.offscr.selected = 2;
+		} break;
+		default: break;
+		}
+	}
+
 	actors_event(event);
 }
 

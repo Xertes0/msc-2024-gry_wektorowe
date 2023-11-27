@@ -1,4 +1,4 @@
-#pragma sokol @vs vs_offscr
+#pragma sokol @vs vs_offscr2
 
 in vec4 position;
 in vec2 tex_coord;
@@ -13,7 +13,7 @@ void main()
 
 #pragma sokol @end
 
-#pragma sokol @fs fs_offscr
+#pragma sokol @fs fs_offscr2
 
 uniform texture2D tex;
 uniform sampler smp;
@@ -22,7 +22,7 @@ in vec2 f_uv;
 
 out vec4 frag_color;
 
-uniform fs_offscr_params {
+uniform fs_offscr2_params {
 	vec2 u_resolution;
 	float u_time;
 };
@@ -178,4 +178,4 @@ void main()
 
 #pragma sokol @end
 
-#pragma sokol @program offscreen vs_offscr fs_offscr
+#pragma sokol @program offscreen2 vs_offscr2 fs_offscr2
