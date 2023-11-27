@@ -22,7 +22,7 @@ void register_new_asteroid(void)
 				.flags = OF_MOVING,
 				.model_mat = HMM_Scale(HMM_V3(AST_SCALE, AST_SCALE, 1.f)),
 				.pip_type = PIPTYPE_LINES,
-				.bind_type = i,
+				.bind_type = (bind_type_t) i,
 				.move.pos = HMM_V2(-0.5f + (0.5f * offset), 0.f),
 				.move.vel = HMM_V2(0.0001f, 0.00005f),
 			});
