@@ -1165,6 +1165,8 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
       abort('native code called abort()');
     };
 
+  var _emscripten_date_now = () => Date.now();
+
   var _emscripten_get_device_pixel_ratio = () => {
       return (typeof devicePixelRatio == 'number' && devicePixelRatio) || 1.0;
     };
@@ -3329,6 +3331,8 @@ var wasmImports = {
   /** @export */
   abort: _abort,
   /** @export */
+  emscripten_date_now: _emscripten_date_now,
+  /** @export */
   emscripten_get_device_pixel_ratio: _emscripten_get_device_pixel_ratio,
   /** @export */
   emscripten_get_element_css_size: _emscripten_get_element_css_size,
@@ -3635,8 +3639,8 @@ var stackRestore = createExportWrapper('stackRestore');
 var stackAlloc = createExportWrapper('stackAlloc');
 var _emscripten_stack_get_current = () => (_emscripten_stack_get_current = wasmExports['emscripten_stack_get_current'])();
 var dynCall_jiji = Module['dynCall_jiji'] = createExportWrapper('dynCall_jiji');
-var ___start_em_js = Module['___start_em_js'] = 122292;
-var ___stop_em_js = Module['___stop_em_js'] = 128516;
+var ___start_em_js = Module['___start_em_js'] = 123188;
+var ___stop_em_js = Module['___stop_em_js'] = 129412;
 
 // include: postamble.js
 // === Auto-generated postamble setup entry stuff ===
