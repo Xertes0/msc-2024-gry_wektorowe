@@ -1,5 +1,7 @@
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include <sokol_app.h>
 #include <sokol_gfx.h>
@@ -27,6 +29,8 @@
 
 static void sokol_init(void)
 {
+	srand((unsigned int) time(NULL));
+
 	sg_setup(&(sg_desc) {
 			.context = sapp_sgcontext(),
 			.logger.func = slog_func,
