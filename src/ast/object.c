@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <stddef.h>
 
-object_t g_objects[16];
+object_t g_objects[32];
 size_t g_object_count = 0;
 
 /* TODO: Make g_objects sorted by obj.pip_type. */
@@ -11,6 +11,23 @@ object_t *add_object(object_t obj)
 {
 	g_objects[g_object_count++] = obj;
 	return &g_objects[g_object_count - 1];
+}
+
+
+void tick_objects(void)
+{
+	for (size_t i=0; i<g_object_count; ++i) {
+		if (g_objects[i].tick)
+			(*g_objects[i].tick)(&g_objects[i]);
+	}
+}
+
+void event_objects(const sapp_event *event)
+{
+	for (size_t i=0; i<g_object_count; ++i) {
+		if (g_objects[i].event)
+			(*g_objects[i].event)(&g_objects[i], event);
+	}
 }
 
 HMM_Mat4 object_mat(const object_t *obj)

@@ -95,7 +95,6 @@ endif
 
 executable('asteroids',
            'src/sokol.c',
-           'src/ast/actor.c',
            'src/ast/asteroid.c',
            'src/ast/asteroids.c',
            'src/ast/object.c',

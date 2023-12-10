@@ -6,7 +6,6 @@
 #include <sokol_glue.h>
 #include <sokol_log.h>
 
-#include "actor.h"
 #include "object.h"
 #include "pipelines.h"
 #include "state.h"
@@ -126,7 +125,7 @@ static void sokol_init(void)
 
 static void sokol_frame(void)
 {
-	actors_tick();
+	tick_objects();
 
 	sg_begin_pass(g_state.offscr.pass, &g_state.pass_action);
 
@@ -221,7 +220,7 @@ static void sokol_event(const sapp_event *event)
 		}
 	}
 
-	actors_event(event);
+	event_objects(event);
 }
 
 static void sokol_cleanup(void)

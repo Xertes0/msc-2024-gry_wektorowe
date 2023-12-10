@@ -2,12 +2,8 @@
 
 #include <assert.h>
 
-#include "actor.h"
-
-static void ast_tick(actor_t *act)
+static void ast_tick(object_t *obj)
 {
-	object_t *obj = act->obj;
-
         /* Movement */
 
         /* TODO: Some kind of delta time */
@@ -21,6 +17,7 @@ void register_new_asteroid(void)
 	for (size_t i=BINDTYPE_ASTEROIDA; i <= BINDTYPE_ASTEROIDC; ++i) {
 		float offset = (float) (i - BINDTYPE_ASTEROIDA);
 		object_t *ast = add_object((object_t) {
+				.tick = ast_tick,
 				.flags = OF_MOVING | OF_BULLET_TARGET,
 				.model_mat = HMM_Scale(HMM_V3(AST_SCALE, AST_SCALE, 1.f)),
 				.pip_type = PIPTYPE_LINES,
@@ -40,11 +37,13 @@ void register_new_asteroid(void)
 			break;
 		default: assert(false);
 		}
-		add_actor((actor_t) {
-				.tick = ast_tick,
-				.obj = ast,
-			});
 	}
+}
+
+void asteroid_hit(object_t *ast, object_t *bullet)
+{
+	(void) bullet;
+	*ast = g_objects[--g_object_count];
 }
 
 static HMM_Vec2 asteroida_collision_data_data[] = {
