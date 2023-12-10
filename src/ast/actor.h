@@ -5,11 +5,11 @@
 #include "object.h"
 
 struct actor {
-	/* Every function is optional */
+	/* Every function is optional. */
 	void (*tick)(struct actor *);
 	void (*event)(struct actor *, const sapp_event *);
 
-        /* Object being acted on */
+        /* Object being acted on. */
 	object_t *obj;
 	union {
 		struct {

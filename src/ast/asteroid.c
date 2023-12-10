@@ -1,5 +1,7 @@
 #include "object.h"
 
+#include <assert.h>
+
 #include "actor.h"
 
 static void ast_tick(actor_t *act)
@@ -26,9 +28,58 @@ void register_new_asteroid(void)
 				.move.pos = HMM_V2(-0.5f + (0.5f * offset), 0.f),
 				.move.vel = HMM_V2(0.0001f, 0.00005f),
 			});
+		if (i == BINDTYPE_ASTEROIDA) {
+			ast->collision = asteroida_collision_data;
+			ast->flags |= OF_BULLET_TARGET;
+		}
 		add_actor((actor_t) {
 				.tick = ast_tick,
 				.obj = ast,
 			});
 	}
 }
+
+static HMM_Vec2 asteroida_collision_data_data[] = {
+	{{ 0.25f, -0.75f }},
+	{{ -0.5f, 1.f }},
+	{{ -0.25f, 0.5f }},
+	{{ 0.5f, -1.f }},
+	{{ 0.5f, 0.5f }},
+	{{ -1.f, -0.25f }},
+	{{ -0.5f, -1.f }},
+	{{ 0.25f, 0.25f }},
+	{{ -0.5f, 1.f }},
+	{{ 1.f, 0.5f }},
+	{{ 0.5f, 0.5f }},
+	{{ -0.25f, -0.5f }},
+	{{ -0.5f, 0.25f }},
+	{{ 1.f, 1.f }},
+	{{ 0.5f, -0.5f }},
+};
+#define ASTEROIDA_COLLISION_DATA_COUNT 15
+static_assert(ASTEROIDA_COLLISION_DATA_COUNT % 3 == 0, "");
+
+/* static HMM_Vec2 asteroidb_collision_data_data[] = { */
+/* }; */
+/* #define ASTEROIDB_COLLISION_DATA_COUNT (sizeof(asteroidb_collision_data_data) / sizeof(HMM_Vec2)) */
+/* static_assert(ASTEROIDB_COLLISION_DATA_COUNT % 3 == 0); */
+
+/* static HMM_Vec2 asteroidc_collision_data_data[] = { */
+/* }; */
+/* #define ASTEROIDC_COLLISION_DATA_COUNT (sizeof(asteroidc_collision_data_data) / sizeof(HMM_Vec2)) */
+/* static_assert(ASTEROIDC_COLLISION_DATA_COUNT % 3 == 0); */
+
+SPAN(HMM_Vec2) asteroida_collision_data = {
+	.data = &asteroida_collision_data_data,
+	.count = ASTEROIDA_COLLISION_DATA_COUNT,
+};
+
+/* SPAN(HMM_Vec2) asteroidb_collision_data = { */
+/* 	.data = &asteroidb_collision_data_data, */
+/* 	.count = ASTEROIDB_COLLISION_DATA_COUNT, */
+/* }; */
+
+/* SPAN(HMM_Vec2) asteroidc_collision_data = { */
+/* 	.data = &asteroidc_collision_data_data, */
+/* 	.count = ASTEROIDC_COLLISION_DATA_COUNT, */
+/* }; */

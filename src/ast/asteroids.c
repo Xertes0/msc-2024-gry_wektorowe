@@ -9,32 +9,21 @@
 #include "actor.h"
 #include "object.h"
 #include "pipelines.h"
+#include "state.h"
 
 #include "lines.glsl.h"
 
 #include "offscreen1.glsl.h"
 #include "offscreen2.glsl.h"
 #include "offscreen3.glsl.h"
-#define OFFSCREEN_SHADER_COUNT 3
+/* Now in state.h */
+/* #define OFFSCREEN_SHADER_COUNT 3 */
 
 #include <HandmadeMath.h>
 
 #define TARGET_RATIO (4.f / 3.f)
 #define OFFSCREEN_HEIGHT (256.f)
 #define OFFSCREEN_WIDTH (OFFSCREEN_HEIGHT * TARGET_RATIO)
-
-static struct {
-	sg_pass_action pass_action;
-	HMM_Mat4 projection;
-	struct {
-		sg_pass pass;
-		sg_bindings bind;
-		sg_pipeline pip[OFFSCREEN_SHADER_COUNT];
-		size_t selected;
-	} offscr;
-	/* TODO: Current time tracing is very sketchy. */
-	float time;
-} state;
 
 static void sokol_init(void)
 {
@@ -43,7 +32,7 @@ static void sokol_init(void)
 			.logger.func = slog_func,
 		});
 
-	state.pass_action = (sg_pass_action) {
+	g_state.pass_action = (sg_pass_action) {
 		.colors[0] = {
 			.load_action = SG_LOADACTION_CLEAR,
 			.clear_value = { 0.f, 0.f, 0.f, 1.f },
@@ -54,7 +43,7 @@ static void sokol_init(void)
 		},
 	};
 
-	state.projection = HMM_Orthographic_RH_NO(-TARGET_RATIO, TARGET_RATIO,
+	g_state.projection = HMM_Orthographic_RH_NO(-TARGET_RATIO, TARGET_RATIO,
 	                                          -1.f, 1.f,
 	                                          -1.f, 1.f);
 
@@ -66,7 +55,7 @@ static void sokol_init(void)
 			.sample_count = PIP_SAMPLE_COUNT,
 			.label = "offscreen-image",
 		});
-	state.offscr.pass = sg_make_pass(&(sg_pass_desc) {
+	g_state.offscr.pass = sg_make_pass(&(sg_pass_desc) {
 			.color_attachments[0].image = offscr_img,
 			.label = "offscreen-pass",
 		});
@@ -89,7 +78,7 @@ static void sokol_init(void)
 		0, 2, 3,
 	};
 
-	state.offscr.bind = (sg_bindings) {
+	g_state.offscr.bind = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
 				.type = SG_BUFFERTYPE_VERTEXBUFFER,
 				.data = SG_RANGE(offscr_vertices),
@@ -112,7 +101,7 @@ static void sokol_init(void)
 		sg_make_shader(offscreen3_shader_desc(sg_query_backend())),
 	};
 	for (size_t i=0; i<OFFSCREEN_SHADER_COUNT; ++i) {
-		state.offscr.pip[i] = sg_make_pipeline(&(sg_pipeline_desc) {
+		g_state.offscr.pip[i] = sg_make_pipeline(&(sg_pipeline_desc) {
 				.layout = {
                                         /* Attrs always the same. */
 					.attrs = {
@@ -136,7 +125,7 @@ static void sokol_frame(void)
 {
 	actors_tick();
 
-	sg_begin_pass(state.offscr.pass, &state.pass_action);
+	sg_begin_pass(g_state.offscr.pass, &g_state.pass_action);
 
 	pip_type_t last_pip = PIPTYPE_COUNT;
 	for (size_t i=0; i<g_object_count; ++i) {
@@ -148,7 +137,7 @@ static void sokol_frame(void)
 		}
 		sg_apply_bindings(&g_bindings[obj->bind_type]);
 
-		HMM_Mat4 mvp = HMM_MulM4(state.projection, object_mat(obj));
+		HMM_Mat4 mvp = HMM_MulM4(g_state.projection, object_mat(obj));
 		vs_params_t vs_params;
 		memcpy(vs_params.mvp, mvp.Elements, sizeof(float) * 16);
 		sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_params, &SG_RANGE(vs_params));
@@ -158,17 +147,17 @@ static void sokol_frame(void)
 
 	const float win_width = sapp_widthf();
 	const float win_height = sapp_heightf();
-	sg_begin_default_pass(&state.pass_action, (int) win_width, (int) win_height);
+	sg_begin_default_pass(&g_state.pass_action, (int) win_width, (int) win_height);
 
 	const float width = win_height * TARGET_RATIO;
 	const float height = win_height;
 
 	sg_apply_viewportf((win_width - width) / 2.f, 0, width, height, false);
 
-	sg_apply_pipeline(state.offscr.pip[state.offscr.selected]);
-	sg_apply_bindings(&state.offscr.bind);
+	sg_apply_pipeline(g_state.offscr.pip[g_state.offscr.selected]);
+	sg_apply_bindings(&g_state.offscr.bind);
 
-	switch (state.offscr.selected) {
+	switch (g_state.offscr.selected) {
 	case 0: // Shader 1 and 2 take the same parameters.
 	case 1: {
 		fs_offscr1_params_t fs_offscr_params = {
@@ -176,7 +165,7 @@ static void sokol_frame(void)
 				[0] = width,
 				[1] = height,
 			},
-			.u_time = state.time,
+			.u_time = g_state.time,
 		};
 		sg_apply_uniforms(SG_SHADERSTAGE_FS, SLOT_fs_offscr1_params, &SG_RANGE(fs_offscr_params));
 	} break;
@@ -204,7 +193,7 @@ static void sokol_frame(void)
 
 	sg_commit();
 
-	state.time += (float) sapp_frame_duration();
+	g_state.time += (float) sapp_frame_duration();
 }
 
 static void sokol_event(const sapp_event *event)
@@ -213,13 +202,13 @@ static void sokol_event(const sapp_event *event)
 	    event->modifiers & SAPP_MODIFIER_CTRL) {
 		switch (event->key_code) {
 		case SAPP_KEYCODE_1: {
-			state.offscr.selected = 0;
+			g_state.offscr.selected = 0;
 		} break;
 		case SAPP_KEYCODE_2: {
-			state.offscr.selected = 1;
+			g_state.offscr.selected = 1;
 		} break;
 		case SAPP_KEYCODE_3: {
-			state.offscr.selected = 2;
+			g_state.offscr.selected = 2;
 		} break;
 		default: break;
 		}
