@@ -75,6 +75,7 @@ shdc_gen = generator(shdc,
                                   '--slang', shader_lang])
 
 shaders = shdc_gen.process('shaders/lines.glsl',
+                           'shaders/offscreen0.glsl',
                            'shaders/offscreen1.glsl',
                            'shaders/offscreen2.glsl',
                            'shaders/offscreen3.glsl')

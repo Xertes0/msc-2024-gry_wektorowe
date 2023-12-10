@@ -44,6 +44,6 @@ HMM_Mat4 object_mat(const object_t *obj);
 void register_new_ship(void);
 void register_new_asteroid(void);
 
-extern SPAN(HMM_Vec2) asteroida_collision_data;
-/* extern SPAN(HMM_Vec2) asteroidb_collision_data; */
-/* extern SPAN(HMM_Vec2) asteroidc_collision_data; */
+extern const SPAN(HMM_Vec2) asteroida_collision_data;
+extern const SPAN(HMM_Vec2) asteroidb_collision_data;
+extern const SPAN(HMM_Vec2) asteroidc_collision_data;

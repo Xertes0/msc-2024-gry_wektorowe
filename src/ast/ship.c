@@ -14,6 +14,7 @@ static void bullet_tick(actor_t *act)
 	/* TODO: Move this into object flag? */
 	act->obj->move.pos = HMM_AddV2(act->obj->move.pos, act->obj->move.vel);
 
+        /* TODO: Collision detection is bugged. */
 	HMM_Mat4 my_mp = HMM_MulM4(g_state.projection, object_mat(act->obj));
 	HMM_Vec2 p = HMM_MulM4V4(my_mp, HMM_V4(0.f, 0.f, 0.f, 1.f)).XY;
 
@@ -43,8 +44,8 @@ static void bullet_tick(actor_t *act)
 			float xb = CROSS(c, a) + CROSS(p, HMM_SubV2(c, a));
 			float xc = CROSS(a, b) + CROSS(p, HMM_SubV2(a, b));
 
-			if (xa > 0.f && xb > 0.f && xc > 0.f &&
-			    xa < 1.f && xb < 1.f && xc < 1.f) {
+			if (xa >= 0.f && xb >= 0.f && xc >= 0.f &&
+			    xa <= 1.f && xb <= 1.f && xc <= 1.f) {
 				inside = true;
 				*obj = g_objects[g_object_count-1];
 				g_object_count -= 1;

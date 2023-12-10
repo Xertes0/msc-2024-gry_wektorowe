@@ -3,7 +3,7 @@
 #include <HandmadeMath.h>
 #include <sokol_gfx.h>
 
-#define OFFSCREEN_SHADER_COUNT 3
+#define OFFSCREEN_SHADER_COUNT 4
 
 typedef struct {
 	sg_pass_action pass_action;
