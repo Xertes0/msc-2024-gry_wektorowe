@@ -135,7 +135,7 @@ static void draw_triangles(void)
 		                  SLOT_vs_debug_triangle_params,
 		                  &SG_RANGE(vs_params));
 
-		sg_draw(0, 6, 1);
+		sg_draw(0, 3, 1);
 	}
 }
 
