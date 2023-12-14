@@ -98,6 +98,7 @@ void asteroid_hit(object_t *ast, object_t *bullet)
 	if (stage == 2)
 		goto ret;
 
+        /* TODO: Place asteroids depending on bullet position. */
 	for (size_t i=0; i<2; ++i) {
 		object_t new = build_base_asteroid(stage + 1);
 		new.move = ast->move;

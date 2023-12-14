@@ -58,7 +58,6 @@ void event_objects(const sapp_event *);
 
 HMM_Mat4 object_mat(const object_t *obj);
 
-/* TODO: Lame names */
 void register_new_ship(void);
 void register_new_asteroid(void);
 

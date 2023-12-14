@@ -13,7 +13,6 @@ static void bullet_tick(object_t *obj)
 	/* TODO: Move this into object flag? */
 	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
 
-        /* TODO: Collision detection is bugged. */
 	HMM_Mat4 my_mp = HMM_MulM4(g_state.projection, object_mat(obj));
 	HMM_Vec2 p = HMM_MulM4V4(my_mp, HMM_V4(0.f, 0.f, 0.f, 1.f)).XY;
 
