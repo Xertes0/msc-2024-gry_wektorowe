@@ -14,9 +14,10 @@ static void ast_tick(object_t *obj)
 	obj->move.rot += 0.005f;
 	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
 
+	/* Debug hitboxes */
+#if 0
 	HMM_Mat4 obj_mat = HMM_MulM4(g_state.projection, object_mat(obj));
 
-	/* Debug hitboxes */
 	for (size_t i=0; i<obj->collision.count; i += 3) {
 		HMM_Vec2 a = ((HMM_Vec2 *) obj->collision.data)[i];
 		HMM_Vec2 b = ((HMM_Vec2 *) obj->collision.data)[i+1];
@@ -28,11 +29,11 @@ static void ast_tick(object_t *obj)
 		debug_triangle((HMM_Vec2[3]) {a, b, c},
 		               true);
 
-		/* debug_point(a, true); */
-		/* debug_point(b, true); */
-		/* debug_point(c, true); */
+		debug_point(a, true);
+		debug_point(b, true);
+		debug_point(c, true);
 	}
-
+#endif
 }
 
 #define AST_SCALE 0.2f
@@ -115,60 +116,102 @@ ret:
 }
 
 static HMM_Vec2 asteroida_collision_data_data[] = {
-	{{ 0.25f, -0.75f }},
+	{{ 1.f, 0.5f }},
+	{{ 0.25f, 1.f }},
 	{{ -0.5f, 1.f }},
 	{{ -0.25f, 0.5f }},
-	{{ 0.5f, -1.f }},
-	{{ 0.5f, 0.5f }},
+	{{ -1.f, 0.5f }},
+	{{ -1.f, -0.25f }},
 	{{ -1.f, -0.25f }},
 	{{ -0.5f, -1.f }},
-	{{ 0.25f, 0.25f }},
-	{{ -0.5f, 1.f }},
+	{{ 0.25f, -0.75f }},
+	{{ 0.25f, -0.75f }},
+	{{ 0.5f, -1.f }},
+	{{ 1.f, -0.5f }},
+	{{ 0.25f, 0.f }},
+	{{ 1.f, 0.25f }},
 	{{ 1.f, 0.5f }},
-	{{ 0.5f, 0.5f }},
-	{{ -0.25f, -0.5f }},
-	{{ -0.5f, 0.25f }},
-	{{ 1.f, 1.f }},
-	{{ 0.5f, -0.5f }},
+	{{ 1.f, 0.5f }},
+	{{ -0.5f, 1.f }},
+	{{ -0.25f, 0.5f }},
+	{{ -0.25f, 0.5f }},
+	{{ -1.f, -0.25f }},
+	{{ 0.25f, -0.75f }},
+	{{ 0.25f, -0.75f }},
+	{{ 1.f, -0.5f }},
+	{{ 0.25f, 0.f }},
+	{{ 0.25f, 0.f }},
+	{{ 1.f, 0.5f }},
+	{{ -0.25f, 0.5f }},
+	{{ -0.25f, 0.5f }},
+	{{ 0.25f, -0.75f }},
+	{{ 0.25f, 0.f }},
 };
-#define ASTEROIDA_COLLISION_DATA_COUNT 15
+#define ASTEROIDA_COLLISION_DATA_COUNT 30
 static_assert(ASTEROIDA_COLLISION_DATA_COUNT % 3 == 0, "");
 
 static HMM_Vec2 asteroidb_collision_data_data[] = {
-	{{ 0.f, -0.5f }},
-	{{ 1.f, 1.f }},
-	{{ 0.f, 0.75f }},
-	{{ 0.75, 0.5f }},
-	{{ 1.f, 1.f }},
-	{{ 0.5, 0.5f }},
-	{{ 0.f, 1.f }},
-	{{ 0.75, 0.75f }},
-	{{ 1.f, 1.f }},
+	{{ 0.f, 0.5f }},
+	{{ -0.5f, 1.f }},
+	{{ -1.f, 0.5f }},
+	{{ -1.f, 0.5f }},
+	{{ -1.f, -0.5f }},
+	{{ -0.5f, -1.f }},
+	{{ -0.5f, -1.f }},
+	{{ 0.25f, -1.f }},
+	{{ 1.f, -0.5f }},
+	{{ 0.75f, 0.f }},
 	{{ 1.f, 0.5f }},
-	{{ 0.f, 0.f }},
-	{{ 0.75f, 1.f }},
+	{{ 0.5f, 1.f }},
+	{{ 0.f, 0.5f }},
+	{{ -1.f, 0.5f }},
+	{{ -0.5f, -1.f }},
+	{{ -0.5f, -1.f }},
+	{{ 1.f, -0.5f }},
+	{{ 0.75f, 0.f }},
+	{{ 0.75f, 0.f }},
+	{{ 0.5f, 1.f }},
+	{{ 0.f, 0.5f }},
+	{{ 0.f, 0.5f }},
+	{{ -0.5f, -1.f }},
+	{{ 0.75f, 0.f }},
 };
-#define ASTEROIDB_COLLISION_DATA_COUNT 12
+#define ASTEROIDB_COLLISION_DATA_COUNT 24
 static_assert(ASTEROIDB_COLLISION_DATA_COUNT % 3 == 0, "");
 
 static HMM_Vec2 asteroidc_collision_data_data[] = {
-	{{ 0.f, -1.f }},
-	{{ 0.5f, -0.25f }},
-	{{ 1.f, 0.25f }},
-	{{ 0.5f, 0.5f }},
-	{{ 1.f, 1.f }},
-	{{ 0.5f, 0.75f }},
-	{{ 0.f, 0.5f }},
-	{{ -0.25f, -0.25f }},
-	{{ 0.25f, 0.5f }},
+	{{ 0.f, 0.75f }},
+	{{ -0.5f, 1.f }},
+	{{ -1.f, 0.5f }},
+	{{ -0.75f, 0.f }},
+	{{ -1.f, -0.5f }},
+	{{ -0.5f, -1.f }},
+	{{ -0.25f, -0.75f }},
+	{{ 0.5f, -1.f }},
+	{{ 1.f, -0.25f }},
+	{{ 0.5f, 0.25f }},
+	{{ 1.f, 0.5f }},
 	{{ 0.5f, 1.f }},
-	{{ 1.f, 1.f }},
-	{{ 0.75f, 0.f }},
-	{{ 0.f, -0.25f }},
-	{{ 0.5f, 0.5f }},
-	{{ 1.f, 0.f }},
+	{{ 0.f, 0.75f }},
+	{{ -1.f, 0.5f }},
+	{{ -0.75f, 0.f }},
+	{{ -0.75f, 0.f }},
+	{{ -0.5f, -1.f }},
+	{{ -0.25f, -0.75f }},
+	{{ -0.25f, -0.75f }},
+	{{ 1.f, -0.25f }},
+	{{ 0.5f, 0.25f }},
+	{{ 0.5f, 0.25f }},
+	{{ 0.5f, 1.f }},
+	{{ 0.f, 0.75f }},
+	{{ 0.f, 0.75f }},
+	{{ -0.75f, 0.f }},
+	{{ -0.25f, -0.75f }},
+	{{ -0.25f, -0.75f }},
+	{{ 0.5f, 0.25f }},
+	{{ 0.f, 0.75f }},
 };
-#define ASTEROIDC_COLLISION_DATA_COUNT 15
+#define ASTEROIDC_COLLISION_DATA_COUNT 30
 static_assert(ASTEROIDC_COLLISION_DATA_COUNT % 3 == 0, "");
 
 const SPAN(HMM_Vec2) asteroida_collision_data = {

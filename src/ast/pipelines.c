@@ -104,6 +104,7 @@ void load_bindings(void)
 	};
 	g_bindings[BINDTYPE_SHIPB] = g_bindings[BINDTYPE_SHIPA];
 
+        /* TODO: Bad shape. */
 	float asteroida_vertices[] = {
 		-0.5f, 1.f, 0.f,
 		-0.25f, 0.5f, 0.f,
@@ -113,7 +114,7 @@ void load_bindings(void)
 		0.25f, -0.75f, 0.f,
 		0.5f, -1.f, 0.f,
 		1.f, -0.5f, 0.f,
-		0.25f, 0.01f, 0.f,
+		0.25f, 0.f, 0.f,
 		1.f, 0.25f, 0.f,
 		1.f, 0.5f, 0.f,
 		0.25f, 1.f, 0.f,
