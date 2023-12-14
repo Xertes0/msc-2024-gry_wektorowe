@@ -1,5 +1,8 @@
 #include "object.h"
 
+#include "debug.h"
+#include "state.h"
+
 #include <assert.h>
 #include <stdlib.h>
 
@@ -10,6 +13,26 @@ static void ast_tick(object_t *obj)
         /* TODO: Some kind of delta time */
 	obj->move.rot += 0.005f;
 	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
+
+	HMM_Mat4 obj_mat = HMM_MulM4(g_state.projection, object_mat(obj));
+
+	/* Debug hitboxes */
+	for (size_t i=0; i<obj->collision.count; i += 3) {
+		HMM_Vec2 a = ((HMM_Vec2 *) obj->collision.data)[i];
+		HMM_Vec2 b = ((HMM_Vec2 *) obj->collision.data)[i+1];
+		HMM_Vec2 c = ((HMM_Vec2 *) obj->collision.data)[i+2];
+		a = HMM_MulM4V4(obj_mat, HMM_V4(a.X, a.Y, 0.f, 1.f)).XY;
+		b = HMM_MulM4V4(obj_mat, HMM_V4(b.X, b.Y, 0.f, 1.f)).XY;
+		c = HMM_MulM4V4(obj_mat, HMM_V4(c.X, c.Y, 0.f, 1.f)).XY;
+
+		debug_triangle((HMM_Vec2[3]) {a, b, c},
+		               true);
+
+		/* debug_point(a, true); */
+		/* debug_point(b, true); */
+		/* debug_point(c, true); */
+	}
+
 }
 
 #define AST_SCALE 0.2f

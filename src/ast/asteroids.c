@@ -8,6 +8,7 @@
 #include <sokol_glue.h>
 #include <sokol_log.h>
 
+#include "debug.h"
 #include "object.h"
 #include "pipelines.h"
 #include "state.h"
@@ -121,6 +122,7 @@ static void sokol_init(void)
 			});
 	}
 
+	init_debug();
 	load_pipelines();
 	load_bindings();
 	register_new_ship();
@@ -196,10 +198,13 @@ static void sokol_frame(void)
 
 	sg_draw(0, 6, 1);
 
+	draw_debug();
+
 	sg_end_pass();
 
 	sg_commit();
 
+	debug_end_frame();
 	g_state.time += (float) sapp_frame_duration();
 }
 

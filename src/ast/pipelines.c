@@ -3,6 +3,7 @@
 #include <assert.h>
 
 #include "lines.glsl.h"
+#include "debug.glsl.h"
 
 sg_pipeline g_pipelines[PIPTYPE_COUNT] = { 0 };
 sg_bindings g_bindings[BINDTYPE_COUNT] = { 0 };
@@ -28,6 +29,33 @@ void load_pipelines(void)
 			.primitive_type = SG_PRIMITIVETYPE_LINES,
 			.label = "lines-pipeline",
 		});
+
+	g_pipelines[PIPTYPE_DEBUG_CIRCLE] = sg_make_pipeline(&(sg_pipeline_desc) {
+			.layout = {
+				.attrs = {
+					[ATTR_vs_debug_circle_position].format = SG_VERTEXFORMAT_FLOAT3,
+				},
+			},
+			.shader = sg_make_shader(debug_circle_shader_desc(sg_query_backend())),
+			.colors[0].blend.enabled = true,
+			.colors[0].blend.dst_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
+			.index_type = SG_INDEXTYPE_UINT16,
+			.primitive_type = SG_PRIMITIVETYPE_TRIANGLES,
+			.label = "debug-circle-pipeline",
+		});
+	g_pipelines[PIPTYPE_DEBUG_TRIANGLE] = sg_make_pipeline(&(sg_pipeline_desc) {
+			.layout = {
+				.attrs = {
+					[ATTR_vs_debug_triangle_index].format = SG_VERTEXFORMAT_FLOAT,
+				},
+			},
+			.shader = sg_make_shader(debug_triangle_shader_desc(sg_query_backend())),
+			.colors[0].blend.enabled = true,
+			.colors[0].blend.dst_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
+			.primitive_type = SG_PRIMITIVETYPE_TRIANGLES,
+			.label = "debug-triangle-pipeline",
+		});
+
 }
 
 void load_bindings(void)

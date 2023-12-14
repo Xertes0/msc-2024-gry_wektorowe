@@ -2,6 +2,7 @@
 
 #include <assert.h>
 
+#include "debug.h"
 #include "state.h"
 
 #define SHIP_SCALE (0.075f)
