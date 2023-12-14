@@ -16,6 +16,7 @@ typedef struct {
 	} offscr;
 	/* TODO: Current time tracing is very sketchy. */
 	float time;
+	bool draw_hitboxes;
 } game_state_t;
 
 extern game_state_t g_state;

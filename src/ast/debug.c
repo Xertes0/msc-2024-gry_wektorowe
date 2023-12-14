@@ -81,6 +81,7 @@ void debug_triangle(HMM_Vec2 verts[3], bool projected)
 	g_tri[g_tri_count++].projected = projected;
 }
 
+/* TODO: Make faster. */
 static void draw_circles(void)
 {
 	sg_apply_pipeline(g_pipelines[PIPTYPE_DEBUG_CIRCLE]);
