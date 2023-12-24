@@ -16,7 +16,8 @@ static void bullet_tick(object_t *obj)
 	}
 
 	/* TODO: Move this into object flag? */
-	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
+	obj->move.pos = HMM_AddV2(obj->move.pos,
+	                          HMM_MulV2F(obj->move.vel, g_state.dtime));
 
 	HMM_Mat4 my_mp = HMM_MulM4(g_state.projection, object_mat(obj));
 	HMM_Vec2 p = HMM_MulM4V4(my_mp, HMM_V4(0.f, 0.f, 0.f, 1.f)).XY;
@@ -62,7 +63,7 @@ static void register_new_bullet(HMM_Vec2 pos, HMM_Vec2 ship_vel, float rot)
 {
 	HMM_Vec2 offset = HMM_RotateV2(HMM_V2(0.f, SHIP_SCALE), rot);
 	pos = HMM_AddV2(pos, offset);
-	HMM_Vec2 vel = HMM_AddV2(HMM_RotateV2(HMM_V2(0.f, 0.01f), rot),
+	HMM_Vec2 vel = HMM_AddV2(HMM_RotateV2(HMM_V2(0.f, 0.5f), rot),
 	                         ship_vel);
 	add_object((object_t) {
 			.tick = bullet_tick,
@@ -119,21 +120,21 @@ static void ship_event(object_t *obj, const sapp_event *event)
 	}
 }
 
+/* TODO: Make ship's velocity non-linear */
 static void ship_tick(object_t *obj)
 {
         /* Movement */
-
-        /* TODO: Some kind of delta time */
 	if (obj->ship.pleft || obj->ship.pright) {
 		const float angle = obj->ship.pleft?1.f:-1.f;
-		obj->move.rot += angle * 0.05f;
+		obj->move.rot += angle * 4.f * g_state.dtime;
 	}
 	if (obj->ship.pup) {
 		obj->move.vel = HMM_AddV2(obj->move.vel,
-		                          HMM_RotateV2(HMM_V2(0.f, 0.0005f),
+		                          HMM_RotateV2(HMM_V2(0.f, 0.05f),
 		                                       obj->move.rot));
 	}
-	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
+	obj->move.pos = HMM_AddV2(obj->move.pos,
+	                          HMM_MulV2F(obj->move.vel, g_state.dtime));
 	obj->move.vel = HMM_MulV2F(obj->move.vel, 0.99f);
 
         /* Switch variant every few ticks */

@@ -9,10 +9,11 @@
 static void ast_tick(object_t *obj)
 {
         /* Movement */
-
-        /* TODO: Some kind of delta time */
-	obj->move.rot += 0.005f;
-	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
+	obj->move.rot += ((obj->move.vel.X * obj->move.vel.X) +
+	                  (obj->move.vel.Y * obj->move.vel.Y)) *
+		10.f * obj->ast.rot_dir * g_state.dtime;
+	obj->move.pos = HMM_AddV2(obj->move.pos,
+	                          HMM_MulV2F(obj->move.vel, g_state.dtime));
 
 	/* Debug hitboxes */
 	if (g_state.draw_hitboxes) {
@@ -62,6 +63,7 @@ static object_t build_base_asteroid(uint8_t stage)
 		                              1.f)),
 		.pip_type = PIPTYPE_LINES,
 		.bind_type = (bind_type_t) (BINDTYPE_ASTEROIDA + i),
+		.ast.rot_dir = 1.f - (2.f * (float) (rand() % 2)),
 		.ast.stage = stage,
 	};
 
@@ -87,8 +89,8 @@ void register_initial_asteroid(void)
 		float offset = (float) (i - BINDTYPE_ASTEROIDA);
 		object_t ast = build_base_asteroid(0);
 		ast.move.pos = HMM_V2(-0.5f + (0.5f * offset), 0.f);
-		ast.move.vel = HMM_V2(((float) (rand() % 40) - 20) * 0.0001f,
-		                      ((float) (rand() % 40) - 20) * 0.0001f);
+		ast.move.vel = HMM_V2(((float) (rand() % 10) - 5.f) * 0.075f,
+		                      ((float) (rand() % 10) - 5.f) * 0.075f);
 		add_object(ast);
 	}
 }

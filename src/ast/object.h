@@ -44,6 +44,7 @@ struct object {
 			uint8_t flip;
 		} ship;
 		struct {
+			float rot_dir;
 			uint8_t stage;
 		} ast;
 	};

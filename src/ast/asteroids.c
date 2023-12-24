@@ -12,6 +12,7 @@
 #include "object.h"
 #include "pipelines.h"
 #include "state.h"
+#include "utility.h"
 
 #include "lines.glsl.h"
 
@@ -126,7 +127,9 @@ static void sokol_init(void)
 	load_pipelines();
 	load_bindings();
 	register_new_ship();
-	/* register_initial_asteroid(); */
+	register_initial_asteroid();
+
+	g_state.time_ms = get_msec();
 }
 
 static void sokol_frame(void)
@@ -174,7 +177,7 @@ static void sokol_frame(void)
 				[0] = width,
 				[1] = height,
 			},
-			.u_time = g_state.time,
+			.u_time = (float) g_state.time_ms / 1000.f,
 		};
 		sg_apply_uniforms(SG_SHADERSTAGE_FS, SLOT_fs_offscr1_params, &SG_RANGE(fs_offscr_params));
 	} break;
@@ -205,7 +208,10 @@ static void sokol_frame(void)
 	sg_commit();
 
 	debug_end_frame();
-	g_state.time += (float) sapp_frame_duration();
+
+	uint64_t old_time_ms = g_state.time_ms;
+	g_state.time_ms = get_msec();
+	g_state.dtime = (float) (g_state.time_ms - old_time_ms) / 1000.f;
 }
 
 static void sokol_event(const sapp_event *event)

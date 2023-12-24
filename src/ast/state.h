@@ -14,8 +14,13 @@ typedef struct {
 		sg_pipeline pip[OFFSCREEN_SHADER_COUNT];
 		size_t selected;
 	} offscr;
-	/* TODO: Current time tracing is very sketchy. */
-	float time;
+
+        /* Time in milliseconds since unix epoch.
+           Both are updated at the end of a frame. */
+	uint64_t time_ms;
+        /* In seconds. */
+	float dtime;
+
 	bool draw_hitboxes;
 } game_state_t;
 
