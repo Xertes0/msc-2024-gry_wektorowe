@@ -98,17 +98,17 @@ void asteroid_hit(object_t *ast, object_t *bullet)
 	if (stage == 2)
 		goto ret;
 
-        /* TODO: Place asteroids depending on bullet position. */
 	for (size_t i=0; i<2; ++i) {
 		object_t new = build_base_asteroid(stage + 1);
 		new.move = ast->move;
-		new.move.vel = HMM_AddV2(new.move.vel,
-		                         HMM_MulV2F(bullet->move.vel, 0.25f));
-		#define RND (1.f - ((float) rand() / (float) RAND_MAX) * 2.f)
-		new.move.pos = HMM_AddV2(new.move.pos,
-		                         HMM_V2(RND/10.f,
-		                                RND/10.f));
-		#undef RND
+		if (i == 0) {
+			new.move.vel = HMM_AddV2(new.move.vel,
+			                         HMM_MulV2F(bullet->move.vel, 0.25f));
+		} else {
+			new.move.vel = HMM_AddV2(new.move.vel,
+			                         HMM_MulV2F(bullet->move.vel, -(0.25f / 2.f)));
+		}
+		new.move.vel = HMM_RotateV2(new.move.vel, 90.f);
 		add_object(new);
 	}
 
