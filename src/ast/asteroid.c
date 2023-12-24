@@ -81,13 +81,14 @@ static object_t build_base_asteroid(uint8_t stage)
 	return ast;
 }
 
-void register_new_asteroid(void)
+void register_initial_asteroid(void)
 {
 	for (size_t i=BINDTYPE_ASTEROIDA; i <= BINDTYPE_ASTEROIDC; ++i) {
 		float offset = (float) (i - BINDTYPE_ASTEROIDA);
 		object_t ast = build_base_asteroid(0);
 		ast.move.pos = HMM_V2(-0.5f + (0.5f * offset), 0.f);
-		ast.move.vel = HMM_V2(0.0001f, 0.00005f);
+		ast.move.vel = HMM_V2(((float) (rand() % 40) - 20) * 0.0001f,
+		                      ((float) (rand() % 40) - 20) * 0.0001f);
 		add_object(ast);
 	}
 }

@@ -64,7 +64,7 @@ void event_objects(const sapp_event *);
 HMM_Mat4 object_mat(const object_t *obj);
 
 void register_new_ship(void);
-void register_new_asteroid(void);
+void register_initial_asteroid(void);
 
 void asteroid_hit(object_t *ast, object_t *bullet);
 

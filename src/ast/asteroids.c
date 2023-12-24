@@ -126,7 +126,7 @@ static void sokol_init(void)
 	load_pipelines();
 	load_bindings();
 	register_new_ship();
-	register_new_asteroid();
+	/* register_initial_asteroid(); */
 }
 
 static void sokol_frame(void)
