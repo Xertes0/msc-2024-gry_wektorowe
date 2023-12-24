@@ -83,16 +83,14 @@ static object_t build_base_asteroid(uint8_t stage)
 	return ast;
 }
 
-void register_initial_asteroid(void)
+object_t *register_random_asteroid(void)
 {
-	for (size_t i=BINDTYPE_ASTEROIDA; i <= BINDTYPE_ASTEROIDC; ++i) {
-		float offset = (float) (i - BINDTYPE_ASTEROIDA);
-		object_t ast = build_base_asteroid(0);
-		ast.move.pos = HMM_V2(-0.5f + (0.5f * offset), 0.f);
-		ast.move.vel = HMM_V2(((float) (rand() % 10) - 5.f) * 0.075f,
-		                      ((float) (rand() % 10) - 5.f) * 0.075f);
-		add_object(ast);
-	}
+	object_t ast = build_base_asteroid(0);
+	ast.move.pos.X = (float) rand() / (float) RAND_MAX * 2.f - 1.f;
+	ast.move.pos.Y = (float) rand() / (float) RAND_MAX * 2.f - 1.f;
+	ast.move.vel = HMM_V2(((float) (rand() % 10) - 5.f) * 0.075f,
+	                      ((float) (rand() % 10) - 5.f) * 0.075f);
+	return add_object(ast);
 }
 
 void asteroid_hit(object_t *ast, object_t *bullet)

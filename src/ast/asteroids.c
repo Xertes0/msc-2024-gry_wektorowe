@@ -127,7 +127,6 @@ static void sokol_init(void)
 	load_pipelines();
 	load_bindings();
 	register_new_ship();
-	register_initial_asteroid();
 
 	g_state.time_ms = get_msec();
 }
@@ -208,6 +207,12 @@ static void sokol_frame(void)
 	sg_commit();
 
 	debug_end_frame();
+
+	if (g_object_count < 4) {
+		for (size_t i=0; i<3; ++i) {
+			register_random_asteroid();
+		}
+	}
 
 	uint64_t old_time_ms = g_state.time_ms;
 	g_state.time_ms = get_msec();

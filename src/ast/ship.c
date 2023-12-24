@@ -11,7 +11,7 @@
 static void bullet_tick(object_t *obj)
 {
 	if (get_msec() >= obj->spawn_time + 1500) {
-		g_objects[obj - g_objects] = g_objects[--g_object_count];
+		*obj = g_objects[--g_object_count];
 		return;
 	}
 
