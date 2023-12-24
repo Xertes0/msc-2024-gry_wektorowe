@@ -10,6 +10,11 @@
 
 static void bullet_tick(object_t *obj)
 {
+	if (get_msec() >= obj->spawn_time + 1500) {
+		g_objects[obj - g_objects] = g_objects[--g_object_count];
+		return;
+	}
+
 	/* TODO: Move this into object flag? */
 	obj->move.pos = HMM_AddV2(obj->move.pos, obj->move.vel);
 
@@ -65,6 +70,7 @@ static void register_new_bullet(HMM_Vec2 pos, HMM_Vec2 ship_vel, float rot)
 			.pip_type = PIPTYPE_LINES,
 			.bind_type = BINDTYPE_BULLET,
 			.model_mat = HMM_Scale(HMM_V3(BULLET_SCALE, BULLET_SCALE, 1.f)),
+			.spawn_time = get_msec(),
 			.move = {
 				.pos = pos,
 				.vel = vel,

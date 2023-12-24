@@ -96,6 +96,7 @@ endif
 
 executable('asteroids',
            'src/sokol.c',
+           'src/utility.c',
            'src/ast/asteroid.c',
            'src/ast/asteroids.c',
            'src/ast/debug.c',

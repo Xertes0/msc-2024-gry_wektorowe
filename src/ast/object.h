@@ -1,5 +1,7 @@
 #pragma once
 
+#include <time.h>
+
 #include <HandmadeMath.h>
 #include <sokol_app.h>
 
@@ -24,6 +26,9 @@ struct object {
 
         /* If OF_BULLET_TARGET, holds an array of triangle vertices. */
 	SPAN(HMM_Vec2) collision;
+
+        /* Optional */
+	uint64_t spawn_time;
 
 	struct {
 		HMM_Vec2 pos;
