@@ -19,6 +19,14 @@ static size_t g_circ_count = 0;
 static sg_bindings g_circ_bind;
 
 static struct {
+	HMM_Vec2 points[2];
+	bool projected;
+} g_lines[BUFFSIZE];
+static size_t g_lines_count = 0;
+
+static sg_bindings g_lines_bind;
+
+static struct {
 	HMM_Vec2 verts[3];
 	bool projected;
 } g_tri[BUFFSIZE];
@@ -34,12 +42,10 @@ void init_debug(void)
 		1.0f, 1.0f, 0.f,	// TR
 		1.0f, -1.0f, 0.f,	// BR
 	};
-
 	uint16_t circ_indices[] = {
 		0, 2, 1,
 		2, 3, 1,
 	};
-
 	g_circ_bind = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
 				.type = SG_BUFFERTYPE_VERTEXBUFFER,
@@ -51,10 +57,19 @@ void init_debug(void)
 			})
 	};
 
+	float lines_vertices[] = {
+		0.f, 1.f,
+	};
+	g_lines_bind = (sg_bindings) {
+		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
+				.type = SG_BUFFERTYPE_VERTEXBUFFER,
+				.data = SG_RANGE(lines_vertices),
+			}),
+	};
+
 	float tri_vertices[] = {
 		0.f, 1.f, 2.f,
 	};
-
 	g_tri_bind = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
 				.type = SG_BUFFERTYPE_VERTEXBUFFER,
@@ -66,6 +81,7 @@ void init_debug(void)
 void debug_end_frame(void)
 {
 	g_circ_count = 0;
+	g_lines_count = 0;
 	g_tri_count = 0;
 }
 
@@ -73,6 +89,13 @@ void debug_point(HMM_Vec2 pos, bool projected)
 {
 	g_circ[g_circ_count].pos = pos;
 	g_circ[g_circ_count++].projected = projected;
+}
+
+void debug_line(HMM_Vec2 a, HMM_Vec2 b, bool projected)
+{
+	g_lines[g_lines_count].points[0] = a;
+	g_lines[g_lines_count].points[1] = b;
+	g_lines[g_lines_count++].projected = projected;
 }
 
 void debug_triangle(HMM_Vec2 verts[3], bool projected)
@@ -106,6 +129,36 @@ static void draw_circles(void)
 		                  SLOT_vs_debug_circle_params,
 		                  &SG_RANGE(vs_params));
 		sg_draw(0, 6, 1);
+	}
+}
+
+static void draw_lines(void)
+{
+	sg_apply_pipeline(g_pipelines[PIPTYPE_DEBUG_LINES]);
+	sg_apply_bindings(&g_lines_bind);
+
+	for (size_t i=0; i<g_lines_count; ++i) {
+		HMM_Mat4 mvp;
+		if (g_lines[i].projected) {
+			mvp = HMM_M4D(1.f);
+		} else {
+			mvp = g_state.projection;
+		}
+
+		vs_debug_lines_params_t vs_params;
+
+		memcpy(vs_params.mvp, mvp.Elements, sizeof(float) * 16);
+
+		vs_params.pos[0][0] = g_lines[i].points[0].X;
+		vs_params.pos[0][1] = g_lines[i].points[0].Y;
+		vs_params.pos[1][0] = g_lines[i].points[1].X;
+		vs_params.pos[1][1] = g_lines[i].points[1].Y;
+
+		sg_apply_uniforms(SG_SHADERSTAGE_VS,
+		                  SLOT_vs_debug_lines_params,
+		                  &SG_RANGE(vs_params));
+
+		sg_draw(0, 2, 1);
 	}
 }
 
@@ -143,6 +196,8 @@ void draw_debug(void)
 {
 	if (g_circ_count != 0)
 		draw_circles();
+	if (g_lines_count != 0)
+		draw_lines();
 	if (g_tri_count != 0)
 		draw_triangles();
 }

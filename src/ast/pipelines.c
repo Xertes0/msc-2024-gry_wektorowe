@@ -43,6 +43,18 @@ void load_pipelines(void)
 			.primitive_type = SG_PRIMITIVETYPE_TRIANGLES,
 			.label = "debug-circle-pipeline",
 		});
+	g_pipelines[PIPTYPE_DEBUG_LINES] = sg_make_pipeline(&(sg_pipeline_desc) {
+			.layout = {
+				.attrs = {
+					[ATTR_vs_debug_lines_index].format = SG_VERTEXFORMAT_FLOAT,
+				},
+			},
+			.shader = sg_make_shader(debug_lines_shader_desc(sg_query_backend())),
+			.colors[0].blend.enabled = true,
+			.colors[0].blend.dst_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
+			.primitive_type = SG_PRIMITIVETYPE_LINES,
+			.label = "debug-lines-pipeline",
+		});
 	g_pipelines[PIPTYPE_DEBUG_TRIANGLE] = sg_make_pipeline(&(sg_pipeline_desc) {
 			.layout = {
 				.attrs = {

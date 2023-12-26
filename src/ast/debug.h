@@ -9,4 +9,5 @@ void debug_end_frame(void);
 void draw_debug(void);
 
 void debug_point(HMM_Vec2 pos, bool projected);
+void debug_line(HMM_Vec2 a, HMM_Vec2 b, bool projected);
 void debug_triangle(HMM_Vec2 verts[3], bool projected);

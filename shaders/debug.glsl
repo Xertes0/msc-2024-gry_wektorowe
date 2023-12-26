@@ -73,5 +73,33 @@ void main()
 
 #pragma sokol @end
 
+#pragma sokol @vs vs_debug_lines
+
+in float index;
+
+uniform vs_debug_lines_params {
+	mat4 mvp;
+	vec4 pos[2];
+};
+
+void main()
+{
+	gl_Position = mvp * vec4(pos[int(index)].xy, 0., 1.);
+}
+
+#pragma sokol @end
+
+#pragma sokol @fs fs_debug_lines
+
+out vec4 frag_color;
+
+void main()
+{
+	frag_color = vec4(1., 1., 0., 1.);
+}
+
+#pragma sokol @end
+
 #pragma sokol @program debug_circle vs_debug_circle fs_debug_circle
+#pragma sokol @program debug_lines vs_debug_lines fs_debug_lines
 #pragma sokol @program debug_triangle vs_debug_triangle fs_debug_triangle
