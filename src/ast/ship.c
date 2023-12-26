@@ -4,6 +4,7 @@
 
 #include "debug.h"
 #include "state.h"
+#include "utility.h"
 
 #define SHIP_SCALE (0.075f)
 #define BULLET_SCALE (0.005f)
@@ -25,6 +26,13 @@ static void bullet_tick(object_t *obj)
 	FOREACH_OBJECT(other) {
 		if (!(other->flags & OF_BULLET_TARGET))
 			continue;
+
+		if (HMM_LenSqrV2(HMM_SubV2(other->move.pos, obj->move.pos)) >
+		    POW2(BIGGEST_HITABLE_OBJECT_SCALE))
+			continue;
+
+		if (g_state.draw_debug)
+			debug_line(obj->move.pos, other->move.pos, false);
 
 		HMM_Mat4 other_mp = HMM_MulM4(g_state.projection, object_mat(other));
 

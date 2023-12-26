@@ -8,6 +8,9 @@
 #include "pipelines.h"
 #include "utility.h"
 
+#define ASTEROID_SCALE (0.2f)
+#define BIGGEST_HITABLE_OBJECT_SCALE ASTEROID_SCALE
+
 typedef enum {
 	OF_NONE,
 	OF_MOVING = (1 << 0),

@@ -16,7 +16,7 @@ static void ast_tick(object_t *obj)
 	                          HMM_MulV2F(obj->move.vel, g_state.dtime));
 
 	/* Debug hitboxes */
-	if (g_state.draw_hitboxes) {
+	if (g_state.draw_debug) {
 		HMM_Mat4 obj_mat = HMM_MulM4(g_state.projection, object_mat(obj));
 
 		for (size_t i=0; i<obj->collision.count; i += 3) {
@@ -30,14 +30,14 @@ static void ast_tick(object_t *obj)
 			debug_triangle((HMM_Vec2[3]) {a, b, c},
 			               true);
 
-			debug_point(a, true);
-			debug_point(b, true);
-			debug_point(c, true);
+			/* TODO: Fix laggy debug_point(). */
+			/* debug_point(a, true); */
+			/* debug_point(b, true); */
+			/* debug_point(c, true); */
 		}
 	}
 }
 
-#define AST_SCALE 0.2f
 static object_t build_base_asteroid(uint8_t stage)
 {
 	int i = (rand() % 3);
@@ -58,8 +58,8 @@ static object_t build_base_asteroid(uint8_t stage)
 	object_t ast = {
 		.tick = ast_tick,
 		.flags = OF_MOVING | OF_BULLET_TARGET,
-		.model_mat = HMM_Scale(HMM_V3(AST_SCALE * stage_factor,
-		                              AST_SCALE * stage_factor,
+		.model_mat = HMM_Scale(HMM_V3(ASTEROID_SCALE * stage_factor,
+		                              ASTEROID_SCALE * stage_factor,
 		                              1.f)),
 		.pip_type = PIPTYPE_LINES,
 		.bind_type = (bind_type_t) (BINDTYPE_ASTEROIDA + i),

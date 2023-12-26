@@ -221,33 +221,28 @@ static void sokol_frame(void)
 
 static void sokol_event(const sapp_event *event)
 {
-	if (event->type == SAPP_EVENTTYPE_KEY_DOWN) {
-		if (event->modifiers & SAPP_MODIFIER_CTRL) {
-			switch (event->key_code) {
-			case SAPP_KEYCODE_0: {
+	if (event->type == SAPP_EVENTTYPE_KEY_DOWN &&
+	    event->modifiers & SAPP_MODIFIER_CTRL) {
+		switch (event->key_code) {
+		case SAPP_KEYCODE_0: {
+			g_state.offscr.selected = 0;
+		} break;
+		case SAPP_KEYCODE_1: {
+			g_state.offscr.selected = 1;
+		} break;
+		case SAPP_KEYCODE_2: {
+			g_state.offscr.selected = 2;
+		} break;
+		case SAPP_KEYCODE_3: {
+			g_state.offscr.selected = 3;
+		} break;
+		case SAPP_KEYCODE_9: {
+			g_state.draw_debug = !g_state.draw_debug;
+			if (g_state.draw_debug) {
 				g_state.offscr.selected = 0;
-			} break;
-			case SAPP_KEYCODE_1: {
-				g_state.offscr.selected = 1;
-			} break;
-			case SAPP_KEYCODE_2: {
-				g_state.offscr.selected = 2;
-			} break;
-			case SAPP_KEYCODE_3: {
-				g_state.offscr.selected = 3;
-			} break;
-			default: break;
 			}
-		} else {
-			switch (event->key_code) {
-			case SAPP_KEYCODE_H: {
-				g_state.draw_hitboxes = !g_state.draw_hitboxes;
-				if (g_state.draw_hitboxes) {
-					g_state.offscr.selected = 0;
-				}
-			} break;
-			default: break;
-			}
+		} break;
+		default: break;
 		}
 	}
 

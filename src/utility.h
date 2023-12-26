@@ -10,4 +10,6 @@ typedef struct {
 
 #define SPAN(T) span_t
 
+#define POW2(X) ((X) * (X))
+
 uint64_t get_msec(void);

@@ -21,7 +21,7 @@ typedef struct {
         /* In seconds. */
 	float dtime;
 
-	bool draw_hitboxes;
+	bool draw_debug;
 } game_state_t;
 
 extern game_state_t g_state;
