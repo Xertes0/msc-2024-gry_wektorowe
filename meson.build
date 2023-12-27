@@ -25,7 +25,7 @@ hmm_dep = declare_dependency(
 # Platform specific sokol dependencies
 # TODO: Account for macos
 sokol_ps_deps = []
-if target_machine.system() == 'linux'
+if target_machine.system() == 'linux' or target_machine.system() == 'freebsd'
   sokol_ps_deps = [
     dependency('X11'),
     dependency('xi'),
@@ -55,7 +55,7 @@ sokol_dep = declare_dependency(
 # TODO: Account for macos
 if build_machine.system() == 'cygwin' or build_machine.system() == 'windows'
   shdc_pathsuf = '/win32/sokol-shdc.exe'
-elif build_machine.system() == 'linux'
+elif build_machine.system() == 'linux' or build_machine.system() == 'freebsd'
   shdc_pathsuf = '/linux/sokol-shdc'
 else
   error('Your operating system is not supported')
