@@ -15,6 +15,7 @@ typedef enum {
 	OF_NONE,
 	OF_MOVING = (1 << 0),
 	OF_BULLET_TARGET = (1 << 1),
+	OF_ASTEROID = (1 << 2),
 } object_flag_t;
 
 struct object {

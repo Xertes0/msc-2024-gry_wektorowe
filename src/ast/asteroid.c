@@ -57,7 +57,7 @@ static object_t build_base_asteroid(uint8_t stage)
 
 	object_t ast = {
 		.tick = ast_tick,
-		.flags = OF_MOVING | OF_BULLET_TARGET,
+		.flags = OF_MOVING | OF_BULLET_TARGET | OF_ASTEROID,
 		.model_mat = HMM_Scale(HMM_V3(ASTEROID_SCALE * stage_factor,
 		                              ASTEROID_SCALE * stage_factor,
 		                              1.f)),
