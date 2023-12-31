@@ -18,8 +18,7 @@ object_t *add_object(object_t obj)
 
 void tick_objects(void)
 {
-	for (size_t i=0; i<g_object_count; ++i) {
-		object_t *obj = &g_objects[i];
+	FOREACH_OBJECT(obj) {
 		HMM_Mat4 mp = HMM_MulM4(g_state.projection, object_mat(obj));
 		HMM_Vec2 p = HMM_MulM4V4(mp, HMM_V4(0.f, 0.f, 0.f, 1.f)).XY;
 
@@ -40,9 +39,9 @@ void tick_objects(void)
 
 void event_objects(const sapp_event *event)
 {
-	for (size_t i=0; i<g_object_count; ++i) {
-		if (g_objects[i].event)
-			(*g_objects[i].event)(&g_objects[i], event);
+	FOREACH_OBJECT(obj) {
+		if (obj->event)
+		        obj->event(obj, event);
 	}
 }
 

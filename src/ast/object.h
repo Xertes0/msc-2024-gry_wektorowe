@@ -56,8 +56,11 @@ typedef struct object object_t;
 extern object_t g_objects[32];
 extern size_t g_object_count;
 
-#define FOREACH_OBJECT(VAR) \
-	for (object_t *VAR = g_objects; VAR < g_objects + g_object_count; ++VAR)
+#define _FOREACH_OBJECT(MODIF, VAR)	  \
+	for (MODIF object_t *VAR = g_objects; VAR < g_objects + g_object_count; ++VAR)
+
+#define FOREACH_OBJECT(VAR) _FOREACH_OBJECT(, VAR)
+#define FOREACH_CONST_OBJECT(VAR) _FOREACH_OBJECT(const, VAR)
 
 object_t *add_object(object_t obj);
 void tick_objects(void);

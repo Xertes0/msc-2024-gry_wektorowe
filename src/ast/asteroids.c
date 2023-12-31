@@ -138,9 +138,7 @@ static void sokol_frame(void)
 	sg_begin_pass(g_state.offscr.pass, &g_state.pass_action);
 
 	pip_type_t last_pip = PIPTYPE_COUNT;
-	for (size_t i=0; i<g_object_count; ++i) {
-		const object_t *obj = &g_objects[i];
-
+	FOREACH_CONST_OBJECT(obj) {
 		if (last_pip != obj->pip_type) {
 			sg_apply_pipeline(g_pipelines[obj->pip_type]);
 			last_pip = obj->pip_type;
