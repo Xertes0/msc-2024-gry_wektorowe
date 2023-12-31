@@ -6,6 +6,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#define ASTEROID_SCALE (0.2f)
+
 static void ast_tick(object_t *obj)
 {
         /* Movement */
