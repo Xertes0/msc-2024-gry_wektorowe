@@ -569,9 +569,7 @@ function getUniqueRunDependency(id) {
 function addRunDependency(id) {
   runDependencies++;
 
-  if (Module['monitorRunDependencies']) {
-    Module['monitorRunDependencies'](runDependencies);
-  }
+  Module['monitorRunDependencies']?.(runDependencies);
 
   if (id) {
     assert(!runDependencyTracking[id]);
@@ -605,9 +603,7 @@ function addRunDependency(id) {
 function removeRunDependency(id) {
   runDependencies--;
 
-  if (Module['monitorRunDependencies']) {
-    Module['monitorRunDependencies'](runDependencies);
-  }
+  Module['monitorRunDependencies']?.(runDependencies);
 
   if (id) {
     assert(runDependencyTracking[id]);
@@ -630,9 +626,7 @@ function removeRunDependency(id) {
 
 /** @param {string|number=} what */
 function abort(what) {
-  if (Module['onAbort']) {
-    Module['onAbort'](what);
-  }
+  Module['onAbort']?.(what);
 
   what = 'Aborted(' + what + ')';
   // TODO(sbc): Should we remove printing and leave it up to whoever
@@ -1076,7 +1070,7 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
   }
 
   var warnOnce = (text) => {
-      if (!warnOnce.shown) warnOnce.shown = {};
+      warnOnce.shown ||= {};
       if (!warnOnce.shown[text]) {
         warnOnce.shown[text] = 1;
         if (ENVIRONMENT_IS_NODE) text = 'warning: ' + text;
@@ -1304,7 +1298,7 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
         if (!target) return '';
         if (target == window) return '#window';
         if (target == screen) return '#screen';
-        return (target && target.nodeName) ? target.nodeName : '';
+        return target?.nodeName || '';
       },
   fullscreenEnabled() {
         return document.fullscreenEnabled
@@ -1515,7 +1509,6 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
   
       var eventHandler = {
         target: findEventTarget(target),
-        allowsDeferredCalls: true,
         eventTypeString,
         callbackfunc,
         handlerFunc: keyEventHandlerFunc,
@@ -1610,7 +1603,7 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
       /** @suppress{checkTypes} */
       HEAP32[((eventStruct)>>2)] = isPointerlocked;
       var nodeName = JSEvents.getNodeNameForTarget(pointerLockElement);
-      var id = (pointerLockElement && pointerLockElement.id) ? pointerLockElement.id : '';
+      var id = pointerLockElement?.id || '';
       stringToUTF8(nodeName, eventStruct + 4, 128);
       stringToUTF8(id, eventStruct + 132, 128);
     };
@@ -1912,6 +1905,10 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
   
         var handle = GL.registerContext(ctx, webGLContextAttributes);
   
+        // If end user enables *glGetProcAddress() functionality, then we must filter out
+        // all future WebGL extensions from being passed to the user, and only restrict to advertising
+        // extensions that the *glGetProcAddress() function knows to handle.
+  
         return handle;
       },
   registerContext:(ctx, webGLContextAttributes) => {
@@ -1940,7 +1937,7 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
         // Active Emscripten GL layer context object.
         GL.currentContext = GL.contexts[contextHandle];
         // Active WebGL context object.
-        Module.ctx = GLctx = GL.currentContext && GL.currentContext.GLctx;
+        Module.ctx = GLctx = GL.currentContext?.GLctx;
         return !(contextHandle && !GLctx);
       },
   getContext:(contextHandle) => {
@@ -1965,7 +1962,7 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
   initExtensions:(context) => {
         // If this function is called without a specific context object, init the
         // extensions of the currently active context.
-        if (!context) context = GL.currentContext;
+        context ||= GL.currentContext;
   
         if (context.initExtensionsDone) return;
         context.initExtensionsDone = true;
@@ -2156,10 +2153,10 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
       }
   
       HEAP32[a + (0>>2)] =
-      HEAP32[a + (4>>2)] = 
-      HEAP32[a + (12>>2)] = 
-      HEAP32[a + (16>>2)] = 
-      HEAP32[a + (32>>2)] = 
+      HEAP32[a + (4>>2)] =
+      HEAP32[a + (12>>2)] =
+      HEAP32[a + (16>>2)] =
+      HEAP32[a + (32>>2)] =
       HEAP32[a + (40>>2)] = 1;
   
     };
@@ -3281,7 +3278,7 @@ function slog_js_log(level,c_str) { const str = UTF8ToString(c_str); switch (lev
   var _proc_exit = (code) => {
       EXITSTATUS = code;
       if (!keepRuntimeAlive()) {
-        if (Module['onExit']) Module['onExit'](code);
+        Module['onExit']?.(code);
         ABORT = true;
       }
       quit_(code, new ExitStatus(code));
@@ -3653,8 +3650,8 @@ var stackRestore = createExportWrapper('stackRestore');
 var stackAlloc = createExportWrapper('stackAlloc');
 var _emscripten_stack_get_current = () => (_emscripten_stack_get_current = wasmExports['emscripten_stack_get_current'])();
 var dynCall_jiji = Module['dynCall_jiji'] = createExportWrapper('dynCall_jiji');
-var ___start_em_js = Module['___start_em_js'] = 127772;
-var ___stop_em_js = Module['___stop_em_js'] = 133996;
+var ___start_em_js = Module['___start_em_js'] = 128660;
+var ___stop_em_js = Module['___stop_em_js'] = 134884;
 
 // include: postamble.js
 // === Auto-generated postamble setup entry stuff ===
@@ -3758,6 +3755,7 @@ var missingLibrarySymbols = [
   'registerVisibilityChangeEventCallback',
   'fillGamepadEventData',
   'registerGamepadEventCallback',
+  'disableGamepadApiIfItThrows',
   'registerBeforeUnloadEventCallback',
   'fillBatteryEventData',
   'battery',
@@ -3783,6 +3781,7 @@ var missingLibrarySymbols = [
   'makePromiseCallback',
   'ExceptionInfo',
   'findMatchingCatch',
+  'Browser_asyncPrepareDataCounter',
   'setMainLoop',
   'getSocketFromFD',
   'getSocketAddress',
