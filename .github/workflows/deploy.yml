@@ -1,0 +1,59 @@
+env:
+  EM_VERSION: 3.1.51
+  EM_CACHE_FOLDER: 'emsdk-cache'
+  BUILD_DIR: '${{ github.workspace }}/_build'
+  PUB_DIR: '${{ github.workspace }}/_out'
+
+name: GitHub Pages deploy
+on: [push]
+jobs:
+  deploy:
+    name: Build and Deploy
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - uses: seanmiddleditch/gha-setup-ninja@master
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: Install meson
+        run: python3 -m pip install meson
+
+      - name: Setup cache
+        id: cache-system-libraries
+        uses: actions/cache@v2
+        with:
+          path: ${{env.EM_CACHE_FOLDER}}
+          key: ${{env.EM_VERSION}}-${{ runner.os }}
+
+      - uses: mymindstorm/setup-emsdk@v13
+        with:
+          version: ${{env.EM_VERSION}}
+          actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
+
+      - name: Configure and Build
+        run: "meson setup ${{ env.BUILD_DIR }}
+                      --buildtype release
+                      --cross-file ./cross/emscripten.txt &&
+              meson compile -C ${{ env.BUILD_DIR }} &&
+              mkdir ${{ env.PUB_DIR }} &&
+              cp ${{ env.BUILD_DIR }}/*.{wasm,js,html}
+                 ${{ github.workspace }}/LICENSE.txt
+                 ${{ env.PUB_DIR }}"
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.PUB_DIR }}
+          publish_branch: pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: "[PAGES]"
