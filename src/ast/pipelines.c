@@ -15,58 +15,58 @@ void load_pipelines(void)
 	assert(!called); called = true;
 
 	g_pipelines[PIPTYPE_LINES] = sg_make_pipeline(&(sg_pipeline_desc) {
-			.layout = {
-				.attrs = {
-					[ATTR_vs_position].format = SG_VERTEXFORMAT_FLOAT3,
-				},
+		.layout = {
+			.attrs = {
+				[ATTR_vs_position].format = SG_VERTEXFORMAT_FLOAT3,
 			},
-			.shader = sg_make_shader(lines_shader_desc(sg_query_backend())),
-			.index_type = SG_INDEXTYPE_UINT16,
-			.cull_mode = PIP_CULLMODE,
-			.sample_count = PIP_SAMPLE_COUNT,
-			.depth.pixel_format = SG_PIXELFORMAT_NONE,
-			.colors[0].pixel_format = PIP_PIXEL_FORMAT,
-			.primitive_type = SG_PRIMITIVETYPE_LINES,
-			.label = "lines-pipeline",
-		});
+		},
+		.shader = sg_make_shader(lines_shader_desc(sg_query_backend())),
+		.index_type = SG_INDEXTYPE_UINT16,
+		.cull_mode = PIP_CULLMODE,
+		.sample_count = PIP_SAMPLE_COUNT,
+		.depth.pixel_format = SG_PIXELFORMAT_NONE,
+		.colors[0].pixel_format = PIP_PIXEL_FORMAT,
+		.primitive_type = SG_PRIMITIVETYPE_LINES,
+		.label = "lines-pipeline",
+	});
 
 	g_pipelines[PIPTYPE_DEBUG_CIRCLE] = sg_make_pipeline(&(sg_pipeline_desc) {
-			.layout = {
-				.attrs = {
-					[ATTR_vs_debug_circle_position].format = SG_VERTEXFORMAT_FLOAT3,
-				},
+		.layout = {
+			.attrs = {
+				[ATTR_vs_debug_circle_position].format = SG_VERTEXFORMAT_FLOAT3,
 			},
-			.shader = sg_make_shader(debug_circle_shader_desc(sg_query_backend())),
-			.colors[0].blend.enabled = true,
-			.colors[0].blend.dst_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
-			.index_type = SG_INDEXTYPE_UINT16,
-			.primitive_type = SG_PRIMITIVETYPE_TRIANGLES,
-			.label = "debug-circle-pipeline",
-		});
+		},
+		.shader = sg_make_shader(debug_circle_shader_desc(sg_query_backend())),
+		.colors[0].blend.enabled = true,
+		.colors[0].blend.dst_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
+		.index_type = SG_INDEXTYPE_UINT16,
+		.primitive_type = SG_PRIMITIVETYPE_TRIANGLES,
+		.label = "debug-circle-pipeline",
+	});
 	g_pipelines[PIPTYPE_DEBUG_LINES] = sg_make_pipeline(&(sg_pipeline_desc) {
-			.layout = {
-				.attrs = {
-					[ATTR_vs_debug_lines_index].format = SG_VERTEXFORMAT_FLOAT,
-				},
+		.layout = {
+			.attrs = {
+				[ATTR_vs_debug_lines_index].format = SG_VERTEXFORMAT_FLOAT,
 			},
-			.shader = sg_make_shader(debug_lines_shader_desc(sg_query_backend())),
-			.colors[0].blend.enabled = true,
-			.colors[0].blend.dst_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
-			.primitive_type = SG_PRIMITIVETYPE_LINES,
-			.label = "debug-lines-pipeline",
-		});
+		},
+		.shader = sg_make_shader(debug_lines_shader_desc(sg_query_backend())),
+		.colors[0].blend.enabled = true,
+		.colors[0].blend.dst_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
+		.primitive_type = SG_PRIMITIVETYPE_LINES,
+		.label = "debug-lines-pipeline",
+	});
 	g_pipelines[PIPTYPE_DEBUG_TRIANGLE] = sg_make_pipeline(&(sg_pipeline_desc) {
-			.layout = {
-				.attrs = {
-					[ATTR_vs_debug_triangle_index].format = SG_VERTEXFORMAT_FLOAT,
-				},
+		.layout = {
+			.attrs = {
+				[ATTR_vs_debug_triangle_index].format = SG_VERTEXFORMAT_FLOAT,
 			},
-			.shader = sg_make_shader(debug_triangle_shader_desc(sg_query_backend())),
-			.colors[0].blend.enabled = true,
-			.colors[0].blend.dst_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
-			.primitive_type = SG_PRIMITIVETYPE_TRIANGLES,
-			.label = "debug-triangle-pipeline",
-		});
+		},
+		.shader = sg_make_shader(debug_triangle_shader_desc(sg_query_backend())),
+		.colors[0].blend.enabled = true,
+		.colors[0].blend.dst_factor_rgb = SG_BLENDFACTOR_SRC_ALPHA,
+		.primitive_type = SG_PRIMITIVETYPE_TRIANGLES,
+		.label = "debug-triangle-pipeline",
+	});
 
 }
 
@@ -104,19 +104,19 @@ void load_bindings(void)
 	g_index_count[BINDTYPE_SHIPB] = ship_index_count;
 	g_bindings[BINDTYPE_SHIPA] = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_VERTEXBUFFER,
-				.data = SG_RANGE(ship_vertices),
-				.label = "ship-vertices",
-			}),
+			.type = SG_BUFFERTYPE_VERTEXBUFFER,
+			.data = SG_RANGE(ship_vertices),
+			.label = "ship-vertices",
+		}),
 		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_INDEXBUFFER,
-				.data = SG_RANGE(ship_indices),
-				.label = "ship-indices",
-			}),
+			.type = SG_BUFFERTYPE_INDEXBUFFER,
+			.data = SG_RANGE(ship_indices),
+			.label = "ship-indices",
+		}),
 	};
 	g_bindings[BINDTYPE_SHIPB] = g_bindings[BINDTYPE_SHIPA];
 
-        /* TODO: Bad shape. */
+	/* TODO: Bad shape. */
 	float asteroida_vertices[] = {
 		-0.5f, 1.f, 0.f,
 		-0.25f, 0.5f, 0.f,
@@ -140,15 +140,15 @@ void load_bindings(void)
 	g_index_count[BINDTYPE_ASTEROIDA] = sizeof(asteroida_indices) / sizeof(uint16_t);
 	g_bindings[BINDTYPE_ASTEROIDA] = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_VERTEXBUFFER,
-				.data = SG_RANGE(asteroida_vertices),
-				.label = "asteroida-vertices",
-			}),
+			.type = SG_BUFFERTYPE_VERTEXBUFFER,
+			.data = SG_RANGE(asteroida_vertices),
+			.label = "asteroida-vertices",
+		}),
 		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_INDEXBUFFER,
-				.data = SG_RANGE(asteroida_indices),
-				.label = "asteroida-indices",
-			}),
+			.type = SG_BUFFERTYPE_INDEXBUFFER,
+			.data = SG_RANGE(asteroida_indices),
+			.label = "asteroida-indices",
+		}),
 	};
 
 	float asteroidb_vertices[] = {
@@ -171,15 +171,15 @@ void load_bindings(void)
 	g_index_count[BINDTYPE_ASTEROIDB] = sizeof(asteroidb_indices) / sizeof(uint16_t);
 	g_bindings[BINDTYPE_ASTEROIDB] = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_VERTEXBUFFER,
-				.data = SG_RANGE(asteroidb_vertices),
-				.label = "asteroidb-vertices",
-			}),
+			.type = SG_BUFFERTYPE_VERTEXBUFFER,
+			.data = SG_RANGE(asteroidb_vertices),
+			.label = "asteroidb-vertices",
+		}),
 		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_INDEXBUFFER,
-				.data = SG_RANGE(asteroidb_indices),
-				.label = "asteroidb-indices",
-			}),
+			.type = SG_BUFFERTYPE_INDEXBUFFER,
+			.data = SG_RANGE(asteroidb_indices),
+			.label = "asteroidb-indices",
+		}),
 	};
 
 	float asteroidc_vertices[] = {
@@ -205,15 +205,15 @@ void load_bindings(void)
 	g_index_count[BINDTYPE_ASTEROIDC] = sizeof(asteroidc_indices) / sizeof(uint16_t);
 	g_bindings[BINDTYPE_ASTEROIDC] = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_VERTEXBUFFER,
-				.data = SG_RANGE(asteroidc_vertices),
-				.label = "asteroidc-vertices",
-			}),
+			.type = SG_BUFFERTYPE_VERTEXBUFFER,
+			.data = SG_RANGE(asteroidc_vertices),
+			.label = "asteroidc-vertices",
+		}),
 		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_INDEXBUFFER,
-				.data = SG_RANGE(asteroidc_indices),
-				.label = "asteroidc-indices",
-			}),
+			.type = SG_BUFFERTYPE_INDEXBUFFER,
+			.data = SG_RANGE(asteroidc_indices),
+			.label = "asteroidc-indices",
+		}),
 	};
 
 	float bullet_vertices[] = {
@@ -231,14 +231,14 @@ void load_bindings(void)
 	g_index_count[BINDTYPE_BULLET] = sizeof(bullet_indices) / sizeof(uint16_t);
 	g_bindings[BINDTYPE_BULLET] = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_VERTEXBUFFER,
-				.data = SG_RANGE(bullet_vertices),
-				.label = "bullet-vertices",
-			}),
+			.type = SG_BUFFERTYPE_VERTEXBUFFER,
+			.data = SG_RANGE(bullet_vertices),
+			.label = "bullet-vertices",
+		}),
 		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_INDEXBUFFER,
-				.data = SG_RANGE(bullet_indices),
-				.label = "bullet-indices",
-			}),
+			.type = SG_BUFFERTYPE_INDEXBUFFER,
+			.data = SG_RANGE(bullet_indices),
+			.label = "bullet-indices",
+		}),
 	};
 }

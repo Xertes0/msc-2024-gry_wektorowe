@@ -40,14 +40,14 @@
 #define PI 3.141592653589
 
 #ifdef LINEAR_PROCESSING
-#       define TEX2D(c) pow(texture(Source, (c)), vec4(CRTgamma))
+#	define TEX2D(c) pow(texture(Source, (c)), vec4(CRTgamma))
 #else
-#       define TEX2D(c) texture(Source, (c))
+#	define TEX2D(c) texture(Source, (c))
 #endif
 
 // aspect ratio
-vec2 aspect     = vec2(invert_aspect > 0.5 ? (4.0 / 3.0, 1.0) : (4.0 / 3.0, 1.0));
-vec2 overscan   = vec2(1.01, 1.01);
+vec2 aspect	= vec2(invert_aspect > 0.5 ? (4.0 / 3.0, 1.0) : (4.0 / 3.0, 1.0));
+vec2 overscan	= vec2(1.01, 1.01);
 
 #pragma sokol @end
 
@@ -86,18 +86,18 @@ float intersect(vec2 xy)
 
 vec2 bkwtrans(vec2 xy)
 {
-	float c     = intersect(xy);
+	float c	    = intersect(xy);
 	vec2 point  = (vec2(c, c)*xy - vec2(-R, -R)*sinangle) / vec2(R, R);
 	vec2 poc    = point/cosangle;
 
 	vec2 tang   = sinangle/cosangle;
-	float A     = dot(tang, tang) + 1.0;
-	float B     = -2.0*dot(poc, tang);
-	float C     = dot(poc, poc) - 1.0;
+	float A	    = dot(tang, tang) + 1.0;
+	float B	    = -2.0*dot(poc, tang);
+	float C	    = dot(poc, poc) - 1.0;
 
-	float a     = (-B + sqrt(B*B - 4.0*A*C))/(2.0*A);
-	vec2 uv     = (point - a*sinangle)/cosangle;
-	float r     = FIX(R*acos(a));
+	float a	    = (-B + sqrt(B*B - 4.0*A*C))/(2.0*A);
+	vec2 uv	    = (point - a*sinangle)/cosangle;
+	float r	    = FIX(R*acos(a));
 
 	return uv*r/sin(r/R);
 }
@@ -114,8 +114,8 @@ vec2 fwtrans(vec2 uv)
 
 vec3 maxscale()
 {
-	vec2 c  = bkwtrans(-R * sinangle / (1.0 + R/d*cosangle.x*cosangle.y));
-	vec2 a  = vec2(0.5,0.5)*aspect;
+	vec2 c	= bkwtrans(-R * sinangle / (1.0 + R/d*cosangle.x*cosangle.y));
+	vec2 a	= vec2(0.5,0.5)*aspect;
 
 	vec2 lo = vec2(fwtrans(vec2(-a.x,  c.y)).x,
 		       fwtrans(vec2( c.x, -a.y)).y)/aspect;
@@ -135,7 +135,7 @@ void main()
 	// shader.
 	sinangle    = sin(vec2(x_tilt, y_tilt));
 	cosangle    = cos(vec2(x_tilt, y_tilt));
-	stretch     = maxscale();
+	stretch	    = maxscale();
 
 	if(vertical_scanlines < 0.5)
 	{
@@ -151,7 +151,7 @@ void main()
 	}else{
 		TextureSize = vec2(SourceSize.x, SHARPER * SourceSize.y);
 
-		ilfac = vec2(clamp(floor(SourceSize.x/(interlace_detect > 0.5 ? 200.0 : 1000)),  1.0, 2.0), 1.0);
+		ilfac = vec2(clamp(floor(SourceSize.x/(interlace_detect > 0.5 ? 200.0 : 1000)),	 1.0, 2.0), 1.0);
 
 		// The size of one texel, in texture-coordinates.
 		one = ilfac / TextureSize;
@@ -204,18 +204,18 @@ float intersect(vec2 xy)
 
 vec2 bkwtrans(vec2 xy)
 {
-	float c     = intersect(xy);
+	float c	    = intersect(xy);
 	vec2 point  = (vec2(c, c)*xy - vec2(-R, -R)*sinangle) / vec2(R, R);
 	vec2 poc    = point/cosangle;
 	vec2 tang   = sinangle/cosangle;
 
-	float A     = dot(tang, tang) + 1.0;
-	float B     = -2.0*dot(poc, tang);
-	float C     = dot(poc, poc) - 1.0;
+	float A	    = dot(tang, tang) + 1.0;
+	float B	    = -2.0*dot(poc, tang);
+	float C	    = dot(poc, poc) - 1.0;
 
-	float a     = (-B + sqrt(B*B - 4.0*A*C)) / (2.0*A);
-	vec2 uv     = (point - a*sinangle) / cosangle;
-	float r     = FIX(R*acos(a));
+	float a	    = (-B + sqrt(B*B - 4.0*A*C)) / (2.0*A);
+	vec2 uv	    = (point - a*sinangle) / cosangle;
+	float r	    = FIX(R*acos(a));
 
 	return uv*r/sin(r/R);
 }
@@ -280,15 +280,15 @@ vec4 scanlineWeights(float distance, vec4 color)
 	// "weights" should have a higher peak at the center of the
 	// scanline than for a wider beam.
 #ifdef USEGAUSSIAN
-        vec4 wid = 0.3 + 0.1 * pow(color, vec4(3.0));
-        vec4 weights = vec4(distance / wid);
+	vec4 wid = 0.3 + 0.1 * pow(color, vec4(3.0));
+	vec4 weights = vec4(distance / wid);
 
-        return (lum + 0.4) * exp(-weights * weights) / wid;
+	return (lum + 0.4) * exp(-weights * weights) / wid;
 #else
-        vec4 wid = 2.0 + 2.0 * pow(color, vec4(4.0));
-        vec4 weights = vec4(distance / scanline_weight);
+	vec4 wid = 2.0 + 2.0 * pow(color, vec4(4.0));
+	vec4 weights = vec4(distance / scanline_weight);
 
-        return (lum + 1.4) * exp(-pow(weights * inversesqrt(0.5 * wid), wid)) / (0.6 + 0.2 * wid);
+	return (lum + 1.4) * exp(-pow(weights * inversesqrt(0.5 * wid), wid)) / (0.6 + 0.2 * wid);
 #endif
 }
 
@@ -319,17 +319,17 @@ void main()
 	// Here's a helpful diagram to keep in mind while trying to
 	// understand the code:
 	//
-	//  |      |      |      |      |
+	//  |	   |	  |	 |	|
 	// -------------------------------
-	//  |      |      |      |      |
-	//  |  01  |  11  |  21  |  31  | <-- current scanline
-	//  |      | @    |      |      |
+	//  |	   |	  |	 |	|
+	//  |  01  |  11  |  21	 |  31	| <-- current scanline
+	//  |	   | @	  |	 |	|
 	// -------------------------------
-	//  |      |      |      |      |
-	//  |  02  |  12  |  22  |  32  | <-- next scanline
-	//  |      |      |      |      |
+	//  |	   |	  |	 |	|
+	//  |  02  |  12  |  22	 |  32	| <-- next scanline
+	//  |	   |	  |	 |	|
 	// -------------------------------
-	//  |      |      |      |      |
+	//  |	   |	  |	 |	|
 	//
 	// Each character-cell represents a pixel on the output
 	// surface, "@" represents the current pixel (always somewhere
@@ -433,29 +433,29 @@ void main()
 	vec4 weights, weights2;
 	if(vertical_scanlines < 0.5)
 	{
-		weights  = scanlineWeights(uv_ratio.y, col);
+		weights	 = scanlineWeights(uv_ratio.y, col);
 		weights2 = scanlineWeights(1.0 - uv_ratio.y, col2);
 
 #ifdef OVERSAMPLE
 		float filter_ = fwidth(ratio_scale.y);
 		uv_ratio.y    = uv_ratio.y + 1.0/3.0*filter_;
-		weights       = (weights  + scanlineWeights(uv_ratio.y, col))/3.0;
+		weights	      = (weights  + scanlineWeights(uv_ratio.y, col))/3.0;
 		weights2      = (weights2 + scanlineWeights(abs(1.0 - uv_ratio.y), col2))/3.0;
 		uv_ratio.y    = uv_ratio.y - 2.0/3.0*filter_;
-		weights       = weights  + scanlineWeights(abs(uv_ratio.y), col)/3.0;
+		weights	      = weights	 + scanlineWeights(abs(uv_ratio.y), col)/3.0;
 		weights2      = weights2 + scanlineWeights(abs(1.0 - uv_ratio.y), col2)/3.0;
 #endif
 	}else{
-		weights  = scanlineWeights(uv_ratio.x, col);
+		weights	 = scanlineWeights(uv_ratio.x, col);
 		weights2 = scanlineWeights(1.0 - uv_ratio.x, col2);
 
 #ifdef OVERSAMPLE
 		float filter_ = fwidth(ratio_scale.x);
 		uv_ratio.x    = uv_ratio.x + 1.0/3.0*filter_;
-		weights       = (weights  + scanlineWeights(uv_ratio.x, col))/3.0;
+		weights	      = (weights  + scanlineWeights(uv_ratio.x, col))/3.0;
 		weights2      = (weights2 + scanlineWeights(abs(1.0 - uv_ratio.x), col2))/3.0;
 		uv_ratio.x    = uv_ratio.x - 2.0/3.0*filter_;
-		weights       = weights  + scanlineWeights(abs(uv_ratio.x), col)/3.0;
+		weights	      = weights	 + scanlineWeights(abs(uv_ratio.x), col)/3.0;
 		weights2      = weights2 + scanlineWeights(abs(1.0 - uv_ratio.x), col2)/3.0;
 #endif
 	}

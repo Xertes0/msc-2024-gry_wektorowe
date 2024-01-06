@@ -15,10 +15,10 @@ typedef struct {
 		size_t selected;
 	} offscr;
 
-        /* Time in milliseconds since unix epoch.
-           Both are updated at the end of a frame. */
+	/* Time in milliseconds since unix epoch.
+	   Both are updated at the end of a frame. */
 	uint64_t time_ms;
-        /* In seconds. */
+	/* In seconds. */
 	float dtime;
 
 	bool draw_debug;

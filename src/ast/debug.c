@@ -48,13 +48,13 @@ void init_debug(void)
 	};
 	g_circ_bind = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_VERTEXBUFFER,
-				.data = SG_RANGE(circ_vertices),
-			}),
+			.type = SG_BUFFERTYPE_VERTEXBUFFER,
+			.data = SG_RANGE(circ_vertices),
+		}),
 		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_INDEXBUFFER,
-				.data = SG_RANGE(circ_indices),
-			})
+			.type = SG_BUFFERTYPE_INDEXBUFFER,
+			.data = SG_RANGE(circ_indices),
+		})
 	};
 
 	float lines_vertices[] = {
@@ -62,9 +62,9 @@ void init_debug(void)
 	};
 	g_lines_bind = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_VERTEXBUFFER,
-				.data = SG_RANGE(lines_vertices),
-			}),
+			.type = SG_BUFFERTYPE_VERTEXBUFFER,
+			.data = SG_RANGE(lines_vertices),
+		}),
 	};
 
 	float tri_vertices[] = {
@@ -72,9 +72,9 @@ void init_debug(void)
 	};
 	g_tri_bind = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_VERTEXBUFFER,
-				.data = SG_RANGE(tri_vertices),
-			}),
+			.type = SG_BUFFERTYPE_VERTEXBUFFER,
+			.data = SG_RANGE(tri_vertices),
+		}),
 	};
 }
 
@@ -126,8 +126,8 @@ static void draw_circles(void)
 		vs_params.pos[1] = g_circ[i].pos.Y;
 
 		sg_apply_uniforms(SG_SHADERSTAGE_VS,
-		                  SLOT_vs_debug_circle_params,
-		                  &SG_RANGE(vs_params));
+				  SLOT_vs_debug_circle_params,
+				  &SG_RANGE(vs_params));
 		sg_draw(0, 6, 1);
 	}
 }
@@ -155,8 +155,8 @@ static void draw_lines(void)
 		vs_params.pos[1][1] = g_lines[i].points[1].Y;
 
 		sg_apply_uniforms(SG_SHADERSTAGE_VS,
-		                  SLOT_vs_debug_lines_params,
-		                  &SG_RANGE(vs_params));
+				  SLOT_vs_debug_lines_params,
+				  &SG_RANGE(vs_params));
 
 		sg_draw(0, 2, 1);
 	}
@@ -185,8 +185,8 @@ static void draw_triangles(void)
 		}
 
 		sg_apply_uniforms(SG_SHADERSTAGE_VS,
-		                  SLOT_vs_debug_triangle_params,
-		                  &SG_RANGE(vs_params));
+				  SLOT_vs_debug_triangle_params,
+				  &SG_RANGE(vs_params));
 
 		sg_draw(0, 3, 1);
 	}

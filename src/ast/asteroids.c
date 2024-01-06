@@ -34,9 +34,9 @@ static void sokol_init(void)
 	srand((unsigned int) time(NULL));
 
 	sg_setup(&(sg_desc) {
-			.context = sapp_sgcontext(),
-			.logger.func = slog_func,
-		});
+		.context = sapp_sgcontext(),
+		.logger.func = slog_func,
+	});
 
 	g_state.pass_action = (sg_pass_action) {
 		.colors[0] = {
@@ -50,31 +50,31 @@ static void sokol_init(void)
 	};
 
 	g_state.projection = HMM_Orthographic_RH_NO(-TARGET_RATIO, TARGET_RATIO,
-	                                            -1.f, 1.f,
-	                                            -1.f, 1.f);
+						    -1.f, 1.f,
+						    -1.f, 1.f);
 
 	const sg_image offscr_img = sg_make_image(&(sg_image_desc) {
-			.render_target = true,
-			.width = (int) OFFSCREEN_WIDTH,
-			.height = (int) OFFSCREEN_HEIGHT,
-			.pixel_format = PIP_PIXEL_FORMAT,
-			.sample_count = PIP_SAMPLE_COUNT,
-			.label = "offscreen-image",
-		});
+		.render_target = true,
+		.width = (int) OFFSCREEN_WIDTH,
+		.height = (int) OFFSCREEN_HEIGHT,
+		.pixel_format = PIP_PIXEL_FORMAT,
+		.sample_count = PIP_SAMPLE_COUNT,
+		.label = "offscreen-image",
+	});
 	g_state.offscr.pass = sg_make_pass(&(sg_pass_desc) {
-			.color_attachments[0].image = offscr_img,
-			.label = "offscreen-pass",
-		});
+		.color_attachments[0].image = offscr_img,
+		.label = "offscreen-pass",
+	});
 
 	const sg_sampler smp = sg_make_sampler(&(sg_sampler_desc) {
-			.min_filter = SG_FILTER_NEAREST,
-			.mag_filter = SG_FILTER_NEAREST,
-			.wrap_u = SG_WRAP_REPEAT,
-			.wrap_v = SG_WRAP_REPEAT,
-		});
+		.min_filter = SG_FILTER_NEAREST,
+		.mag_filter = SG_FILTER_NEAREST,
+		.wrap_u = SG_WRAP_REPEAT,
+		.wrap_v = SG_WRAP_REPEAT,
+	});
 
 	float offscr_vertices[] = {
-		-1.0f,  1.0f, 0.0f,	0.0f, 1.0f,
+		-1.0f,	1.0f, 0.0f,	0.0f, 1.0f,
 		1.0f,  1.0f, 0.0f,	1.0f, 1.0f,
 		1.0f, -1.0f, 0.0f,	1.0f, 0.0f,
 		-1.0f, -1.0f, 0.0f,	0.0f, 0.0f,
@@ -86,15 +86,15 @@ static void sokol_init(void)
 
 	g_state.offscr.bind = (sg_bindings) {
 		.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_VERTEXBUFFER,
-				.data = SG_RANGE(offscr_vertices),
-				.label = "offscr-vertices"
-			}),
+			.type = SG_BUFFERTYPE_VERTEXBUFFER,
+			.data = SG_RANGE(offscr_vertices),
+			.label = "offscr-vertices"
+		}),
 		.index_buffer = sg_make_buffer(&(sg_buffer_desc) {
-				.type = SG_BUFFERTYPE_INDEXBUFFER,
-				.data = SG_RANGE(offscr_indices),
-				.label = "offscr-indices"
-			}),
+			.type = SG_BUFFERTYPE_INDEXBUFFER,
+			.data = SG_RANGE(offscr_indices),
+			.label = "offscr-indices"
+		}),
 		.fs = {
 			.images[SLOT_tex] = offscr_img,
 			.samplers[SLOT_smp] = smp,
@@ -110,17 +110,17 @@ static void sokol_init(void)
 	};
 	for (size_t i=0; i<OFFSCREEN_SHADER_COUNT; ++i) {
 		g_state.offscr.pip[i] = sg_make_pipeline(&(sg_pipeline_desc) {
-				.layout = {
-					/* Attrs always the same. */
-					.attrs = {
-						[ATTR_vs_offscr0_position].format = SG_VERTEXFORMAT_FLOAT3,
-						[ATTR_vs_offscr0_tex_coord].format = SG_VERTEXFORMAT_FLOAT2,
-					},
+			.layout = {
+				/* Attrs always the same. */
+				.attrs = {
+					[ATTR_vs_offscr0_position].format = SG_VERTEXFORMAT_FLOAT3,
+					[ATTR_vs_offscr0_tex_coord].format = SG_VERTEXFORMAT_FLOAT2,
 				},
-				.shader = offscr_shaders[i],
-				.index_type = SG_INDEXTYPE_UINT16,
-				.label = "offscreen-to-display-nth-pipeline",
-			});
+			},
+			.shader = offscr_shaders[i],
+			.index_type = SG_INDEXTYPE_UINT16,
+			.label = "offscreen-to-display-nth-pipeline",
+		});
 	}
 
 	init_debug();

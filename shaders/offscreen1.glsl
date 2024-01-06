@@ -40,7 +40,7 @@ vec2 curve(vec2 uv)
 
 void main()
 {
-	#define tex sampler2D(tex, smp)
+#define tex sampler2D(tex, smp)
 
 	vec2 uv = curve(f_uv);
 	float x =

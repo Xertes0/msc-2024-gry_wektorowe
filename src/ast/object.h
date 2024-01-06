@@ -25,10 +25,10 @@ struct object {
 	bind_type_t bind_type;
 	HMM_Mat4 model_mat;
 
-        /* If OF_BULLET_TARGET, holds an array of triangle vertices. */
+	/* If OF_BULLET_TARGET, holds an array of triangle vertices. */
 	SPAN(HMM_Vec2) collision;
 
-        /* Optional */
+	/* Optional */
 	uint64_t spawn_time;
 
 	struct {

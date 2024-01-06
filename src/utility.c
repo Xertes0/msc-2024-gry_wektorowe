@@ -12,5 +12,5 @@ uint64_t get_msec(void)
 		assert(0);
 	}
 	return (((uint64_t) ts.tv_sec) * 1000) +
-		(((uint64_t) ts.tv_nsec) / 1000000);
+	       (((uint64_t) ts.tv_nsec) / 1000000);
 }
